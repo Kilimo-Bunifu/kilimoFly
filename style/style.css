@@ -1,83 +1,89 @@
 :root {
-            /* Light Mode */
-            --bg-page: #F1F4F2;
-            --bg-surface: #FFFFFF;
-            --bg-surface-elevated: #F8FAF9;
-            --border: #D8DFD9;
-            --border-subtle: #E8ECE9;
+            /* Light Theme: Open, seamless, organic, unboxed */
+            --bg-page: #F5F7F5;
+            --surface: #FFFFFF;
+            --surface-hover: #FCFDFC;
+            --surface-subtle: #EDF1EE;
 
-            --text-main: #111827;
-            --text-secondary: #4B5563;
-            --text-muted: #6B7280;
+            --text-heading: #142318;
+            --text-body: #324336;
+            --text-muted: #647668;
+            --text-light: #8E9F92;
 
-            --brand: #15803D;
-            --brand-glow: rgba(21, 128, 61, 0.2);
-
-            --status-ok: #15803D;
-            --status-warn: #D97706;
-            --status-alert: #DC2626;
-            --status-blue: #0284C7;
+            --primary: #2D6A4F;
+            --primary-soft: #D8F3DC;
 
             --zone-dry: #D97706;
-            --zone-optimal: #15803D;
+            --zone-dry-soft: #FEF3C7;
+            --zone-optimal: #2D6A4F;
+            --zone-optimal-soft: #D8F3DC;
             --zone-wet: #0284C7;
+            --zone-wet-soft: #E0F2FE;
 
             --temp-cold: #2563EB;
-            --temp-optimal: #15803D;
+            --temp-cold-soft: #EFF6FF;
+            --temp-optimal: #2D6A4F;
+            --temp-optimal-soft: #D8F3DC;
             --temp-hot: #DC2626;
+            --temp-hot-soft: #FEE2E2;
 
-            --dial-bg: #F8FAF9;
-            --dial-track: #E2E8F0;
-            --dial-ticks: #94A3B8;
-            --dial-ticks-major: #334155;
-            --dial-label: #334155;
-            --needle-color: #0F172A;
+            --dial-track: #E4EBE6;
+            --dial-ticks: #9FB2A5;
+            --dial-ticks-major: #475A4E;
+            --dial-num: #3B4D41;
+            --needle-color: #16241A;
 
-            --shadow-card: 0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.03);
+            --shadow-subtle: 0 4px 20px -2px rgba(20, 35, 24, 0.05);
+            --shadow-hover: 0 8px 30px -4px rgba(20, 35, 24, 0.08);
+            --radius-lg: 24px;
+            --radius-pill: 100px;
         }
 
         [data-theme="dark"] {
-            /* Dark Mode - Technical Telemetry Console */
-            --bg-page: #0B0E14;
-            --bg-surface: #121721;
-            --bg-surface-elevated: #18202E;
-            --border: #222C3D;
-            --border-subtle: #192231;
+            /* Dark Theme: Deep calm canopy, atmospheric, borderless */
+            --bg-page: #0D1210;
+            --surface: #141C18;
+            --surface-hover: #19231E;
+            --surface-subtle: #1A2520;
 
-            --text-main: #F3F4F6;
-            --text-secondary: #9CA3AF;
-            --text-muted: #6B7280;
+            --text-heading: #EEF4F0;
+            --text-body: #BFD0C5;
+            --text-muted: #7D9385;
+            --text-light: #52675A;
 
-            --brand: #22C55E;
-            --brand-glow: rgba(34, 197, 94, 0.25);
-
-            --status-ok: #22C55E;
-            --status-warn: #F59E0B;
-            --status-alert: #EF4444;
-            --status-blue: #38BDF8;
+            --primary: #40916C;
+            --primary-soft: rgba(64, 145, 108, 0.2);
 
             --zone-dry: #F59E0B;
-            --zone-optimal: #22C55E;
+            --zone-dry-soft: rgba(245, 158, 11, 0.15);
+            --zone-optimal: #40916C;
+            --zone-optimal-soft: rgba(64, 145, 108, 0.2);
             --zone-wet: #38BDF8;
+            --zone-wet-soft: rgba(56, 189, 248, 0.15);
 
             --temp-cold: #38BDF8;
-            --temp-optimal: #22C55E;
-            --temp-hot: #EF4444;
+            --temp-cold-soft: rgba(56, 189, 248, 0.15);
+            --temp-optimal: #40916C;
+            --temp-optimal-soft: rgba(64, 145, 108, 0.2);
+            --temp-hot: #F43F5E;
+            --temp-hot-soft: rgba(244, 63, 94, 0.15);
 
-            --dial-bg: #10141D;
-            --dial-track: #1C2433;
-            --dial-ticks: #4B5563;
-            --dial-ticks-major: #9CA3AF;
-            --dial-label: #E5E7EB;
-            --needle-color: #F9FAFB;
+            --dial-track: #1C2621;
+            --dial-ticks: #3F5247;
+            --dial-ticks-major: #7D9385;
+            --dial-num: #BFD0C5;
+            --needle-color: #EEF4F0;
 
-            --shadow-card: 0 4px 20px rgba(0,0,0,0.3);
+            --shadow-subtle: 0 4px 20px -2px rgba(0, 0, 0, 0.35);
+            --shadow-hover: 0 8px 30px -4px rgba(0, 0, 0, 0.5);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            border: none;
+            outline: none;
         }
 
         html, body {
@@ -86,78 +92,58 @@
             overflow: hidden;
             font-family: 'Plus Jakarta Sans', sans-serif;
             background: var(--bg-page);
-            color: var(--text-main);
+            color: var(--text-body);
             transition: background 0.3s ease, color 0.3s ease;
         }
 
-        /* Full-width Viewport Container (Zero vertical scrolling) */
-        .app-viewport {
+        /* Fluid, Open Viewport: Natural flow, generous padding, unboxed */
+        .viewport {
             height: 100vh;
             max-height: 100vh;
-            width: 100vw;
-            padding: 16px 24px;
+            width: 100%;
+            padding: 20px 36px;
             display: flex;
             flex-direction: column;
-            gap: 14px;
-            box-sizing: border-box;
+            justify-content: space-between;
+            gap: 16px;
         }
 
-        /* Header Bar - Spread edge-to-edge */
+        /* 1. Header: Seamless bar without any boxy outlines */
         .header {
-            height: 52px;
-            flex-shrink: 0;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: var(--bg-surface);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 0 20px;
-            box-shadow: var(--shadow-card);
+            height: 48px;
+            flex-shrink: 0;
         }
 
-        .header-brand {
+        .brand-group {
             display: flex;
             align-items: center;
             gap: 12px;
         }
 
         .brand-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            background: var(--brand);
-            color: #0B0E14;
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            background: var(--primary-soft);
+            color: var(--primary);
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 20px;
+        }
+
+        .brand-meta h1 {
             font-size: 18px;
             font-weight: 800;
-        }
-
-        [data-theme="light"] .brand-icon {
-            color: #FFFFFF;
-        }
-
-        .brand-titles h1 {
-            font-size: 17px;
-            font-weight: 800;
+            color: var(--text-heading);
             letter-spacing: -0.3px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
         }
 
-        .brand-titles h1 span {
-            color: var(--brand);
-        }
-
-        .brand-titles p {
-            font-size: 11px;
-            color: var(--text-muted);
-            font-family: 'JetBrains Mono', monospace;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        .brand-meta h1 span {
+            color: var(--primary);
         }
 
         .header-actions {
@@ -166,242 +152,222 @@
             gap: 10px;
         }
 
-        .conn-pill {
+        .live-tag {
             display: flex;
             align-items: center;
             gap: 7px;
-            padding: 6px 12px;
-            border-radius: 20px;
-            background: var(--bg-surface-elevated);
-            border: 1px solid var(--border);
+            padding: 6px 14px;
+            border-radius: var(--radius-pill);
+            background: var(--surface);
+            box-shadow: var(--shadow-subtle);
             font-size: 12px;
-            font-family: 'JetBrains Mono', monospace;
             font-weight: 600;
-            color: var(--text-secondary);
+            color: var(--text-muted);
         }
 
-        .conn-dot {
+        .live-dot {
             width: 7px;
             height: 7px;
             border-radius: 50%;
-            background: var(--status-warn);
+            background: var(--zone-dry);
+            transition: background 0.3s ease;
         }
 
-        .conn-dot.connected {
-            background: var(--brand);
-            box-shadow: 0 0 8px var(--brand);
+        .live-dot.connected {
+            background: var(--primary);
+            box-shadow: 0 0 6px var(--primary);
         }
 
-        .btn {
+        .btn-ghost {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            height: 34px;
-            padding: 0 14px;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 700;
+            height: 36px;
+            padding: 0 16px;
+            border-radius: var(--radius-pill);
+            font-size: 13px;
+            font-weight: 600;
+            font-family: inherit;
             cursor: pointer;
-            border: 1px solid var(--border);
-            background: var(--bg-surface-elevated);
-            color: var(--text-main);
-            transition: all 0.15s ease;
+            background: var(--surface);
+            color: var(--text-heading);
+            box-shadow: var(--shadow-subtle);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
         }
 
-        .btn:hover {
-            border-color: var(--brand);
+        .btn-ghost:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-hover);
         }
 
-        /* Top Row: Actuators (Water Pump & Heater) */
+        /* 2. Actuators Strip: Top placement, seamless soft cards with zero borders */
         .actuators-strip {
-            height: 68px;
+            height: 72px;
             flex-shrink: 0;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 16px;
+            gap: 20px;
         }
 
         .actuator-card {
-            background: var(--bg-surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 0 20px;
+            background: var(--surface);
+            border-radius: 18px;
+            padding: 0 24px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: var(--shadow-card);
-            position: relative;
-            overflow: hidden;
+            box-shadow: var(--shadow-subtle);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
-        .actuator-card::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            background: var(--border);
-            transition: background 0.2s ease;
+        .actuator-card:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-hover);
         }
 
-        .actuator-card.active::before {
-            background: var(--brand);
-        }
-
-        .actuator-meta {
+        .actuator-left {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 16px;
         }
 
         .actuator-glyph {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            background: var(--bg-surface-elevated);
-            border: 1px solid var(--border);
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            background: var(--surface-subtle);
+            color: var(--text-muted);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
-            color: var(--text-secondary);
+            font-size: 22px;
+            transition: all 0.3s ease;
         }
 
         .actuator-card.active .actuator-glyph.pump {
-            color: var(--status-blue);
-            border-color: var(--status-blue);
+            background: var(--zone-wet-soft);
+            color: var(--zone-wet);
         }
 
         .actuator-card.active .actuator-glyph.heater {
-            color: var(--status-warn);
-            border-color: var(--status-warn);
+            background: var(--zone-dry-soft);
+            color: var(--zone-dry);
         }
 
         .actuator-text h3 {
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 700;
+            color: var(--text-heading);
+            margin-bottom: 2px;
         }
 
-        .actuator-text span {
-            font-size: 11px;
+        .actuator-text p {
+            font-size: 12px;
             color: var(--text-muted);
-            font-family: 'JetBrains Mono', monospace;
         }
 
-        .switch-badge {
+        .switch-pill {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            padding: 5px 14px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 800;
-            font-family: 'JetBrains Mono', monospace;
-            border: 1px solid var(--border);
-            background: var(--bg-surface-elevated);
+            gap: 7px;
+            padding: 6px 16px;
+            border-radius: var(--radius-pill);
+            font-size: 13px;
+            font-weight: 700;
+            background: var(--surface-subtle);
             color: var(--text-muted);
+            transition: all 0.3s ease;
         }
 
-        .switch-badge.on {
-            background: var(--brand);
-            border-color: var(--brand);
-            color: #0B0E14;
+        .switch-pill.on {
+            background: var(--primary-soft);
+            color: var(--primary);
         }
 
-        [data-theme="light"] .switch-badge.on {
-            color: #FFFFFF;
+        .switch-pill .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
         }
 
-        /* Middle Section: Main Gauges - Spread wide and fit viewport */
-        .gauges-area {
+        /* 3. Main Gauges Row: Unboxed, expansive, beautiful negative space */
+        .gauges-row {
             flex: 1;
             min-height: 0;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 16px;
+            gap: 20px;
         }
 
         .gauge-card {
-            background: var(--bg-surface);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 16px 20px;
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 22px 28px;
+            box-shadow: var(--shadow-subtle);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            box-shadow: var(--shadow-card);
             min-height: 0;
-            overflow: hidden;
+            transition: box-shadow 0.25s ease;
         }
 
-        .gauge-top {
+        .gauge-card:hover {
+            box-shadow: var(--shadow-hover);
+        }
+
+        .gauge-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-shrink: 0;
-            padding-bottom: 8px;
-            border-bottom: 1px solid var(--border-subtle);
         }
 
-        .gauge-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .gauge-title h2 {
-            font-size: 15px;
+        .gauge-header-title h2 {
+            font-size: 16px;
             font-weight: 700;
+            color: var(--text-heading);
         }
 
-        .gauge-title p {
-            font-size: 11px;
-            color: var(--text-muted);
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .state-chip {
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 700;
-            font-family: 'JetBrains Mono', monospace;
-            background: var(--bg-surface-elevated);
-            border: 1px solid var(--border);
+        .gauge-header-title p {
+            font-size: 12px;
             color: var(--text-muted);
         }
 
-        .state-chip.optimal {
-            background: rgba(34, 197, 94, 0.15);
-            border-color: var(--zone-optimal);
+        .status-pill {
+            font-size: 12px;
+            font-weight: 700;
+            padding: 5px 12px;
+            border-radius: var(--radius-pill);
+            background: var(--surface-subtle);
+            color: var(--text-muted);
+        }
+
+        .status-pill.optimal {
+            background: var(--zone-optimal-soft);
             color: var(--zone-optimal);
         }
 
-        .state-chip.warn {
-            background: rgba(245, 158, 11, 0.15);
-            border-color: var(--zone-dry);
+        .status-pill.warn {
+            background: var(--zone-dry-soft);
             color: var(--zone-dry);
         }
 
-        .state-chip.alert {
-            background: rgba(239, 68, 68, 0.15);
-            border-color: var(--status-alert);
-            color: var(--status-alert);
+        .status-pill.alert {
+            background: var(--temp-hot-soft);
+            color: var(--temp-hot);
         }
 
-        .state-chip.cold {
-            background: rgba(56, 189, 248, 0.15);
-            border-color: var(--temp-cold);
+        .status-pill.cold {
+            background: var(--temp-cold-soft);
             color: var(--temp-cold);
         }
 
-        /* SVG Dial Container */
-        .dial-container {
+        /* Dial Stage: Centers dial within card, scales freely */
+        .dial-stage {
             flex: 1;
             min-height: 0;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             position: relative;
@@ -409,53 +375,51 @@
 
         .dial-svg {
             height: 100%;
-            max-height: calc(100vh - 310px);
+            max-height: calc(100vh - 330px);
             width: auto;
             max-width: 100%;
             display: block;
         }
 
         /* Digital Readout */
-        .digital-box {
+        .dial-readout {
             position: absolute;
             text-align: center;
             pointer-events: none;
         }
 
-        .digital-box.moisture-pos {
-            bottom: 8%;
+        .dial-readout.moisture-pos {
+            bottom: 6%;
         }
 
-        .digital-box.temp-pos {
-            bottom: 4%;
+        .dial-readout.temp-pos {
+            bottom: 2%;
         }
 
-        .digital-num {
-            font-family: 'JetBrains Mono', monospace;
+        .dial-num {
+            font-family: 'Outfit', sans-serif;
             font-size: 42px;
-            font-weight: 800;
+            font-weight: 700;
+            color: var(--text-heading);
             line-height: 1;
-            color: var(--text-main);
             letter-spacing: -1px;
         }
 
-        .digital-num .unit {
+        .dial-num .unit {
             font-size: 20px;
             font-weight: 500;
             color: var(--text-muted);
             margin-left: 2px;
         }
 
-        .digital-sub {
+        .dial-sub {
             font-size: 11px;
-            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
             color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 3px;
+            margin-top: 4px;
         }
 
-        /* SVG Styles */
+        /* SVG Paths & Visual Marks */
         .gauge-track-bg {
             fill: none;
             stroke: var(--dial-track);
@@ -516,37 +480,33 @@
         }
 
         .gauge-num {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Outfit', sans-serif;
             font-size: 13px;
-            font-weight: 700;
-            fill: var(--dial-label);
+            font-weight: 600;
+            fill: var(--dial-num);
         }
 
-        /* Needles */
-        .moisture-needle-blade {
+        /* Needle Design */
+        .needle-blade {
             fill: var(--needle-color);
         }
 
-        .moisture-needle-tip {
-            fill: var(--brand);
+        .needle-tip {
+            fill: var(--primary);
         }
 
         .pivot-ring {
-            fill: var(--bg-surface);
+            fill: var(--surface);
             stroke: var(--needle-color);
             stroke-width: 3;
         }
 
-        .pivot-center {
+        .pivot-core {
             fill: var(--needle-color);
         }
 
         .temp-needle-blade {
-            fill: #DC2626;
-        }
-
-        [data-theme="dark"] .temp-needle-blade {
-            fill: #EF4444;
+            fill: #E11D48;
         }
 
         .temp-needle-tail {
@@ -558,25 +518,24 @@
         }
 
         .temp-pivot-core {
-            fill: #DC2626;
+            fill: #E11D48;
         }
 
-        /* Gauge Legend Strip */
+        /* Legend Strip */
         .gauge-legend {
             flex-shrink: 0;
             display: flex;
             align-items: center;
             justify-content: space-around;
-            padding-top: 8px;
-            border-top: 1px solid var(--border-subtle);
+            padding-top: 6px;
         }
 
         .legend-tag {
             display: flex;
             align-items: center;
             gap: 6px;
-            font-size: 11px;
-            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 600;
             color: var(--text-muted);
         }
 
@@ -586,56 +545,48 @@
             border-radius: 50%;
         }
 
-        /* Bottom Row: System Safety & Alert Status */
+        /* 4. Footer System Bar: Clean borderless status strip */
         .footer-status {
-            height: 44px;
+            height: 40px;
             flex-shrink: 0;
-            background: var(--bg-surface);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 0 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: var(--shadow-card);
+            padding: 0 8px;
         }
 
-        .status-left {
+        .footer-left {
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: 12px;
-            color: var(--text-secondary);
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 500;
         }
 
-        .status-badge {
+        .system-badge {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            padding: 4px 12px;
-            border-radius: 6px;
+            padding: 5px 14px;
+            border-radius: var(--radius-pill);
             font-size: 12px;
-            font-family: 'JetBrains Mono', monospace;
             font-weight: 700;
-            background: rgba(34, 197, 94, 0.15);
-            color: var(--brand);
-            border: 1px solid var(--brand);
+            background: var(--surface);
+            box-shadow: var(--shadow-subtle);
+            color: var(--primary);
         }
 
-        .status-badge.warn {
-            background: rgba(245, 158, 11, 0.15);
-            color: var(--status-warn);
-            border-color: var(--status-warn);
+        .system-badge.warn {
+            color: var(--zone-dry);
         }
 
-        .status-badge.alert {
-            background: rgba(239, 68, 68, 0.15);
-            color: var(--status-alert);
-            border-color: var(--status-alert);
+        .system-badge.alert {
+            color: var(--temp-hot);
         }
 
-        /* Loading Screen */
-        .loading-overlay {
+        /* Loading */
+        .loading-screen {
             position: fixed;
             inset: 0;
             background: var(--bg-page);
@@ -647,18 +598,18 @@
             transition: opacity 0.3s ease;
         }
 
-        .loading-overlay.hidden {
+        .loading-screen.hidden {
             opacity: 0;
             pointer-events: none;
         }
 
-        .spinner {
+        .loading-spinner {
             width: 32px;
             height: 32px;
-            border: 3px solid var(--border);
-            border-top-color: var(--brand);
+            border: 3px solid var(--surface-subtle);
+            border-top-color: var(--primary);
             border-radius: 50%;
-            animation: spin 0.8s linear infinite;
+            animation: spin 0.7s linear infinite;
         }
 
         @keyframes spin {

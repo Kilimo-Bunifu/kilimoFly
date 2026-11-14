@@ -3,7 +3,7 @@ const WS_URL = `ws://${window.location.hostname}:8765`;
         let reconnectAttempts = 0;
         const maxReconnectAttempts = 20;
 
-        // Current needle angles (Moisture starts at -130 deg = 0%, Temp starts at -90 deg = 20C)
+        // Current needle angles (Moisture starts at -130 deg = 0%, Temp starts at -90 deg = 20°C)
         let currentMoistureAngle = -130;
         let currentTempAngle = -90;
 
@@ -37,7 +37,7 @@ const WS_URL = `ws://${window.location.hostname}:8765`;
 
         // Theme management
         function initTheme() {
-            const savedTheme = localStorage.getItem('kilimofly-theme') || 'dark';
+            const savedTheme = localStorage.getItem('kilimofly-theme') || 'light';
             document.documentElement.setAttribute('data-theme', savedTheme);
             updateThemeIcon(savedTheme);
         }
@@ -81,8 +81,7 @@ const WS_URL = `ws://${window.location.hostname}:8765`;
             }
         });
 
-        // GAUGE 1: Moisture update
-        // Scale: 0 to 100%. Angle: -130 deg (0%) to +130 deg (100%)
+        // Moisture update
         function updateMoisture(value) {
             const val = parseFloat(value);
             if (isNaN(val)) return;
@@ -91,11 +90,10 @@ const WS_URL = `ws://${window.location.hostname}:8765`;
             elements.moistureValue.textContent = clamped.toFixed(1);
             const targetAngle = -130 + (clamped / 100) * 260;
 
-            // Animate angle directly on SVG element transform
             const animObj = { angle: currentMoistureAngle };
             gsap.to(animObj, {
                 angle: targetAngle,
-                duration: 0.8,
+                duration: 0.9,
                 ease: 'power2.out',
                 onUpdate: () => {
                     elements.moisturePointer.setAttribute('transform', `rotate(${animObj.angle})`);
@@ -105,21 +103,19 @@ const WS_URL = `ws://${window.location.hostname}:8765`;
                 }
             });
 
-            // Update status chip
             if (clamped < 60) {
-                elements.moistureZonePill.className = 'state-chip warn';
-                elements.moistureZonePill.textContent = 'DRY (<60%)';
+                elements.moistureZonePill.className = 'status-pill warn';
+                elements.moistureZonePill.textContent = 'Low Moisture';
             } else if (clamped <= 70) {
-                elements.moistureZonePill.className = 'state-chip optimal';
-                elements.moistureZonePill.textContent = 'OPTIMAL';
+                elements.moistureZonePill.className = 'status-pill optimal';
+                elements.moistureZonePill.textContent = 'Optimal Range';
             } else {
-                elements.moistureZonePill.className = 'state-chip alert';
-                elements.moistureZonePill.textContent = 'WET (>70%)';
+                elements.moistureZonePill.className = 'status-pill alert';
+                elements.moistureZonePill.textContent = 'High Moisture';
             }
         }
 
-        // GAUGE 2: Temperature update
-        // Scale: 20 to 40°C. Angle: -90 deg (20°C) to +90 deg (40°C)
+        // Temperature update
         function updateTemperature(value) {
             const val = parseFloat(value);
             if (isNaN(val)) return;
@@ -131,7 +127,7 @@ const WS_URL = `ws://${window.location.hostname}:8765`;
             const animObj = { angle: currentTempAngle };
             gsap.to(animObj, {
                 angle: targetAngle,
-                duration: 0.8,
+                duration: 0.9,
                 ease: 'power2.out',
                 onUpdate: () => {
                     elements.temperaturePointer.setAttribute('transform', `rotate(${animObj.angle})`);
@@ -141,82 +137,82 @@ const WS_URL = `ws://${window.location.hostname}:8765`;
                 }
             });
 
-            // Update status chip
             if (clamped < 27) {
-                elements.tempZonePill.className = 'state-chip cold';
-                elements.tempZonePill.textContent = 'COLD (<27°C)';
+                elements.tempZonePill.className = 'status-pill cold';
+                elements.tempZonePill.textContent = 'Cool';
             } else if (clamped <= 33) {
-                elements.tempZonePill.className = 'state-chip optimal';
-                elements.tempZonePill.textContent = 'OPTIMAL';
+                elements.tempZonePill.className = 'status-pill optimal';
+                elements.tempZonePill.textContent = 'Optimal Range';
             } else {
-                elements.tempZonePill.className = 'state-chip alert';
-                elements.tempZonePill.textContent = 'HOT (>33°C)';
+                elements.tempZonePill.className = 'status-pill alert';
+                elements.tempZonePill.textContent = 'High Heat';
             }
         }
 
-        // Actuator: Water Pump
+        // Pump update
         function updatePumpStatus(status) {
             const isOn = String(status).trim().toUpperCase() === 'ON';
             if (isOn) {
                 elements.pumpCard.classList.add('active');
-                elements.pumpBadge.className = 'switch-badge on';
-                elements.pumpBadge.querySelector('.state-text').textContent = 'ON';
+                elements.pumpBadge.className = 'switch-pill on';
+                elements.pumpBadge.querySelector('.badge-text').textContent = 'Running';
             } else {
                 elements.pumpCard.classList.remove('active');
-                elements.pumpBadge.className = 'switch-badge';
-                elements.pumpBadge.querySelector('.state-text').textContent = 'OFF';
+                elements.pumpBadge.className = 'switch-pill';
+                elements.pumpBadge.querySelector('.badge-text').textContent = 'Off';
             }
         }
 
-        // Actuator: Heater
+        // Heater update
         function updateHeaterStatus(status) {
             const isOn = String(status).trim().toUpperCase() === 'ON';
             if (isOn) {
                 elements.heaterCard.classList.add('active');
-                elements.heaterBadge.className = 'switch-badge on';
-                elements.heaterBadge.querySelector('.state-text').textContent = 'ON';
+                elements.heaterBadge.className = 'switch-pill on';
+                elements.heaterBadge.querySelector('.badge-text').textContent = 'Active';
             } else {
                 elements.heaterCard.classList.remove('active');
-                elements.heaterBadge.className = 'switch-badge';
-                elements.heaterBadge.querySelector('.state-text').textContent = 'OFF';
+                elements.heaterBadge.className = 'switch-pill';
+                elements.heaterBadge.querySelector('.badge-text').textContent = 'Off';
             }
         }
 
-        // Space State / Alerts
+        // Alerts update
         function updateAlerts(status) {
             const s = (status || '').trim().toUpperCase();
-            let badgeClass = '';
-            let text = s || 'NORMAL';
+            let pillClass = '';
+            let message = 'All systems normal';
 
-            if (s === 'OK') {
-                text = 'ALL SYSTEMS NORMAL';
+            if (s === 'OK' || !s) {
+                pillClass = '';
+                message = 'All systems normal';
             } else if (s.includes('LOW MOISTURE')) {
-                badgeClass = 'warn';
-                text = 'ALERT: LOW MOISTURE';
+                pillClass = 'warn';
+                message = 'Notice: Soil moisture is low';
             } else if (s.includes('HIGH MOISTURE')) {
-                badgeClass = 'alert';
-                text = 'ALERT: HIGH MOISTURE';
+                pillClass = 'alert';
+                message = 'Alert: Soil moisture is high';
             } else if (s.includes('LOW TEMP')) {
-                badgeClass = 'warn';
-                text = 'ALERT: LOW TEMPERATURE';
+                pillClass = 'warn';
+                message = 'Notice: Temperature is below target';
             } else if (s.includes('HIGH TEMP')) {
-                badgeClass = 'alert';
-                text = 'ALERT: HIGH TEMPERATURE';
+                pillClass = 'alert';
+                message = 'Alert: Temperature is above target';
             }
 
-            elements.alertBadge.className = `status-badge ${badgeClass}`;
-            elements.alertText.textContent = text;
+            elements.alertBadge.className = `system-badge ${pillClass}`.trim();
+            elements.alertText.textContent = message;
         }
 
-        // Connection Handling
+        // Connection
         function setConnectionStatus(connected) {
             if (connected) {
                 elements.connectionDot.classList.add('connected');
-                elements.connectionText.textContent = 'LIVE // CONNECTED';
+                elements.connectionText.textContent = 'Connected';
                 reconnectAttempts = 0;
             } else {
                 elements.connectionDot.classList.remove('connected');
-                elements.connectionText.textContent = 'DISCONNECTED';
+                elements.connectionText.textContent = 'Disconnected';
             }
         }
 
@@ -276,7 +272,6 @@ const WS_URL = `ws://${window.location.hostname}:8765`;
 
         document.addEventListener('DOMContentLoaded', () => {
             initTheme();
-            // Hide loading overlay without injecting any mock values
             setTimeout(() => {
                 elements.loadingOverlay.classList.add('hidden');
             }, 300);
