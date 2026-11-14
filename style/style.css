@@ -1,0 +1,666 @@
+:root {
+            /* Light Mode */
+            --bg-page: #F1F4F2;
+            --bg-surface: #FFFFFF;
+            --bg-surface-elevated: #F8FAF9;
+            --border: #D8DFD9;
+            --border-subtle: #E8ECE9;
+
+            --text-main: #111827;
+            --text-secondary: #4B5563;
+            --text-muted: #6B7280;
+
+            --brand: #15803D;
+            --brand-glow: rgba(21, 128, 61, 0.2);
+
+            --status-ok: #15803D;
+            --status-warn: #D97706;
+            --status-alert: #DC2626;
+            --status-blue: #0284C7;
+
+            --zone-dry: #D97706;
+            --zone-optimal: #15803D;
+            --zone-wet: #0284C7;
+
+            --temp-cold: #2563EB;
+            --temp-optimal: #15803D;
+            --temp-hot: #DC2626;
+
+            --dial-bg: #F8FAF9;
+            --dial-track: #E2E8F0;
+            --dial-ticks: #94A3B8;
+            --dial-ticks-major: #334155;
+            --dial-label: #334155;
+            --needle-color: #0F172A;
+
+            --shadow-card: 0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.03);
+        }
+
+        [data-theme="dark"] {
+            /* Dark Mode - Technical Telemetry Console */
+            --bg-page: #0B0E14;
+            --bg-surface: #121721;
+            --bg-surface-elevated: #18202E;
+            --border: #222C3D;
+            --border-subtle: #192231;
+
+            --text-main: #F3F4F6;
+            --text-secondary: #9CA3AF;
+            --text-muted: #6B7280;
+
+            --brand: #22C55E;
+            --brand-glow: rgba(34, 197, 94, 0.25);
+
+            --status-ok: #22C55E;
+            --status-warn: #F59E0B;
+            --status-alert: #EF4444;
+            --status-blue: #38BDF8;
+
+            --zone-dry: #F59E0B;
+            --zone-optimal: #22C55E;
+            --zone-wet: #38BDF8;
+
+            --temp-cold: #38BDF8;
+            --temp-optimal: #22C55E;
+            --temp-hot: #EF4444;
+
+            --dial-bg: #10141D;
+            --dial-track: #1C2433;
+            --dial-ticks: #4B5563;
+            --dial-ticks-major: #9CA3AF;
+            --dial-label: #E5E7EB;
+            --needle-color: #F9FAFB;
+
+            --shadow-card: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100vh;
+            max-height: 100vh;
+            overflow: hidden;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg-page);
+            color: var(--text-main);
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        /* Full-width Viewport Container (Zero vertical scrolling) */
+        .app-viewport {
+            height: 100vh;
+            max-height: 100vh;
+            width: 100vw;
+            padding: 16px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            box-sizing: border-box;
+        }
+
+        /* Header Bar - Spread edge-to-edge */
+        .header {
+            height: 52px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 0 20px;
+            box-shadow: var(--shadow-card);
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--brand);
+            color: #0B0E14;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        [data-theme="light"] .brand-icon {
+            color: #FFFFFF;
+        }
+
+        .brand-titles h1 {
+            font-size: 17px;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .brand-titles h1 span {
+            color: var(--brand);
+        }
+
+        .brand-titles p {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .conn-pill {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            background: var(--bg-surface-elevated);
+            border: 1px solid var(--border);
+            font-size: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .conn-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--status-warn);
+        }
+
+        .conn-dot.connected {
+            background: var(--brand);
+            box-shadow: 0 0 8px var(--brand);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            height: 34px;
+            padding: 0 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            background: var(--bg-surface-elevated);
+            color: var(--text-main);
+            transition: all 0.15s ease;
+        }
+
+        .btn:hover {
+            border-color: var(--brand);
+        }
+
+        /* Top Row: Actuators (Water Pump & Heater) */
+        .actuators-strip {
+            height: 68px;
+            flex-shrink: 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .actuator-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--shadow-card);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .actuator-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--border);
+            transition: background 0.2s ease;
+        }
+
+        .actuator-card.active::before {
+            background: var(--brand);
+        }
+
+        .actuator-meta {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .actuator-glyph {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: var(--bg-surface-elevated);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: var(--text-secondary);
+        }
+
+        .actuator-card.active .actuator-glyph.pump {
+            color: var(--status-blue);
+            border-color: var(--status-blue);
+        }
+
+        .actuator-card.active .actuator-glyph.heater {
+            color: var(--status-warn);
+            border-color: var(--status-warn);
+        }
+
+        .actuator-text h3 {
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .actuator-text span {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .switch-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+            border: 1px solid var(--border);
+            background: var(--bg-surface-elevated);
+            color: var(--text-muted);
+        }
+
+        .switch-badge.on {
+            background: var(--brand);
+            border-color: var(--brand);
+            color: #0B0E14;
+        }
+
+        [data-theme="light"] .switch-badge.on {
+            color: #FFFFFF;
+        }
+
+        /* Middle Section: Main Gauges - Spread wide and fit viewport */
+        .gauges-area {
+            flex: 1;
+            min-height: 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .gauge-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 16px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: var(--shadow-card);
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        .gauge-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .gauge-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .gauge-title h2 {
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .gauge-title p {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .state-chip {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--bg-surface-elevated);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+        }
+
+        .state-chip.optimal {
+            background: rgba(34, 197, 94, 0.15);
+            border-color: var(--zone-optimal);
+            color: var(--zone-optimal);
+        }
+
+        .state-chip.warn {
+            background: rgba(245, 158, 11, 0.15);
+            border-color: var(--zone-dry);
+            color: var(--zone-dry);
+        }
+
+        .state-chip.alert {
+            background: rgba(239, 68, 68, 0.15);
+            border-color: var(--status-alert);
+            color: var(--status-alert);
+        }
+
+        .state-chip.cold {
+            background: rgba(56, 189, 248, 0.15);
+            border-color: var(--temp-cold);
+            color: var(--temp-cold);
+        }
+
+        /* SVG Dial Container */
+        .dial-container {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .dial-svg {
+            height: 100%;
+            max-height: calc(100vh - 310px);
+            width: auto;
+            max-width: 100%;
+            display: block;
+        }
+
+        /* Digital Readout */
+        .digital-box {
+            position: absolute;
+            text-align: center;
+            pointer-events: none;
+        }
+
+        .digital-box.moisture-pos {
+            bottom: 8%;
+        }
+
+        .digital-box.temp-pos {
+            bottom: 4%;
+        }
+
+        .digital-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 42px;
+            font-weight: 800;
+            line-height: 1;
+            color: var(--text-main);
+            letter-spacing: -1px;
+        }
+
+        .digital-num .unit {
+            font-size: 20px;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-left: 2px;
+        }
+
+        .digital-sub {
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 3px;
+        }
+
+        /* SVG Styles */
+        .gauge-track-bg {
+            fill: none;
+            stroke: var(--dial-track);
+            stroke-width: 14;
+            stroke-linecap: round;
+        }
+
+        .arc-dry {
+            fill: none;
+            stroke: var(--zone-dry);
+            stroke-width: 14;
+            stroke-linecap: round;
+        }
+
+        .arc-optimal {
+            fill: none;
+            stroke: var(--zone-optimal);
+            stroke-width: 14;
+        }
+
+        .arc-wet {
+            fill: none;
+            stroke: var(--zone-wet);
+            stroke-width: 14;
+            stroke-linecap: round;
+        }
+
+        .arc-temp-cold {
+            fill: none;
+            stroke: var(--temp-cold);
+            stroke-width: 16;
+            stroke-linecap: round;
+        }
+
+        .arc-temp-optimal {
+            fill: none;
+            stroke: var(--temp-optimal);
+            stroke-width: 16;
+        }
+
+        .arc-temp-hot {
+            fill: none;
+            stroke: var(--temp-hot);
+            stroke-width: 16;
+            stroke-linecap: round;
+        }
+
+        .gauge-tick.minor {
+            stroke: var(--dial-ticks);
+            stroke-width: 1.5;
+            stroke-linecap: round;
+        }
+
+        .gauge-tick.major {
+            stroke: var(--dial-ticks-major);
+            stroke-width: 2.5;
+            stroke-linecap: round;
+        }
+
+        .gauge-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            font-weight: 700;
+            fill: var(--dial-label);
+        }
+
+        /* Needles */
+        .moisture-needle-blade {
+            fill: var(--needle-color);
+        }
+
+        .moisture-needle-tip {
+            fill: var(--brand);
+        }
+
+        .pivot-ring {
+            fill: var(--bg-surface);
+            stroke: var(--needle-color);
+            stroke-width: 3;
+        }
+
+        .pivot-center {
+            fill: var(--needle-color);
+        }
+
+        .temp-needle-blade {
+            fill: #DC2626;
+        }
+
+        [data-theme="dark"] .temp-needle-blade {
+            fill: #EF4444;
+        }
+
+        .temp-needle-tail {
+            fill: var(--needle-color);
+        }
+
+        .temp-pivot-base {
+            fill: var(--needle-color);
+        }
+
+        .temp-pivot-core {
+            fill: #DC2626;
+        }
+
+        /* Gauge Legend Strip */
+        .gauge-legend {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding-top: 8px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .legend-tag {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-muted);
+        }
+
+        .legend-tag .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        /* Bottom Row: System Safety & Alert Status */
+        .footer-status {
+            height: 44px;
+            flex-shrink: 0;
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--shadow-card);
+        }
+
+        .status-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            background: rgba(34, 197, 94, 0.15);
+            color: var(--brand);
+            border: 1px solid var(--brand);
+        }
+
+        .status-badge.warn {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--status-warn);
+            border-color: var(--status-warn);
+        }
+
+        .status-badge.alert {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--status-alert);
+            border-color: var(--status-alert);
+        }
+
+        /* Loading Screen */
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-page);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: opacity 0.3s ease;
+        }
+
+        .loading-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid var(--border);
+            border-top-color: var(--brand);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }

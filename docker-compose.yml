@@ -1,0 +1,31 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8765:8765"
+    environment:
+      - AFRICASTALKING_API_KEY=${AFRICASTALKING_API_KEY}
+      - AFRICASTALKING_USERNAME=${AFRICASTALKING_USERNAME}
+      - AFRICASTALKING_PHONE=${AFRICASTALKING_PHONE}
+    restart: unless-stopped
+    networks:
+      - kilimofly
+
+  frontend:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./index.html:/usr/share/nginx/html/index.html
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - kilimofly
+
+networks:
+  kilimofly:
+    driver: bridge
