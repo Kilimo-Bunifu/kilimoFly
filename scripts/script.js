@@ -1,5 +1,9 @@
-const WS_URL = `ws://${window.location.hostname}:8765`;
-        let ws = null;
+const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+const wsHost = (window.location.protocol === 'file:' || !window.location.host)
+    ? 'localhost:8765'
+    : window.location.host;
+const WS_URL = `${wsProtocol}//${wsHost}/ws`;
+let ws = null;
         let reconnectAttempts = 0;
         const maxReconnectAttempts = 20;
 
