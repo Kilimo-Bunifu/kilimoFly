@@ -228,6 +228,12 @@ def create_app() -> web.Application:
     if style_dir.exists():
         app.router.add_static('/style', style_dir)
 
+    css_dir = BASE_DIR / 'css'
+    if css_dir.exists():
+        app.router.add_static('/css', css_dir)
+    elif style_dir.exists():
+        app.router.add_static('/css', style_dir)
+
     app.on_startup.append(on_startup)
     app.on_cleanup.append(on_cleanup)
     return app

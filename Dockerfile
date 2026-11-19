@@ -8,6 +8,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY index.html .
 COPY scripts/ ./scripts/
 COPY style/ ./style/
+COPY css/ ./css/
 COPY api/ ./api/
 
 ENV PORT=8765
