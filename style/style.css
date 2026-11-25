@@ -381,144 +381,228 @@
             display: block;
         }
 
-        /* Digital Readout */
+        /* Digital Readout (Avionics OLED Inset) */
         .dial-readout {
             position: absolute;
             text-align: center;
             pointer-events: none;
+            background: rgba(8, 12, 10, 0.56);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 12px;
+            padding: 6px 16px 7px;
+            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.45);
         }
 
         .dial-readout.moisture-pos {
-            bottom: 6%;
+            bottom: 4%;
         }
 
         .dial-readout.temp-pos {
-            bottom: 2%;
+            bottom: 3%;
         }
 
         .dial-num {
             font-family: 'Outfit', sans-serif;
-            font-size: 42px;
+            font-size: 36px;
             font-weight: 700;
+            font-variant-numeric: tabular-nums;
             color: var(--text-heading);
             line-height: 1;
-            letter-spacing: -1px;
+            letter-spacing: -0.5px;
         }
 
         .dial-num .unit {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 500;
             color: var(--text-muted);
-            margin-left: 2px;
+            margin-left: 3px;
         }
 
         .dial-sub {
-            font-size: 11px;
-            font-weight: 600;
+            font-size: 9.5px;
+            font-weight: 700;
+            letter-spacing: 1px;
             color: var(--text-muted);
             margin-top: 4px;
         }
 
-        /* SVG Paths & Visual Marks */
+        /* SVG Avionics Bezel & Dial Paths */
+        .bezel-outer {
+            fill: rgba(12, 16, 14, 0.45);
+            stroke-width: 2.5;
+        }
+
+        .dial-face {
+            stroke: rgba(0, 0, 0, 0.55);
+            stroke-width: 1.5;
+        }
+
+        .bezel-inner-hairline {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.1);
+            stroke-width: 1;
+        }
+
+        .bezel-screw circle {
+            fill: #242A27;
+            stroke: rgba(255, 255, 255, 0.16);
+            stroke-width: 0.8;
+        }
+
+        .bezel-screw line {
+            stroke: rgba(0, 0, 0, 0.65);
+            stroke-width: 1.1;
+            stroke-linecap: round;
+        }
+
+        .dial-micro-label {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 8.5px;
+            font-weight: 700;
+            letter-spacing: 1.6px;
+            fill: rgba(255, 255, 255, 0.65);
+        }
+
+        .dial-micro-sub {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 7px;
+            font-weight: 600;
+            letter-spacing: 1.4px;
+            fill: rgba(255, 255, 255, 0.38);
+        }
+
         .gauge-track-bg {
             fill: none;
             stroke: var(--dial-track);
-            stroke-width: 14;
-            stroke-linecap: round;
+            stroke-width: 7;
+            stroke-linecap: butt;
         }
 
         .arc-dry {
             fill: none;
             stroke: var(--zone-dry);
-            stroke-width: 14;
-            stroke-linecap: round;
+            stroke-width: 7;
+            stroke-linecap: butt;
+            opacity: 0.92;
         }
 
         .arc-optimal {
             fill: none;
             stroke: var(--zone-optimal);
-            stroke-width: 14;
+            stroke-width: 7;
+            opacity: 0.95;
         }
 
         .arc-wet {
             fill: none;
             stroke: var(--zone-wet);
-            stroke-width: 14;
-            stroke-linecap: round;
+            stroke-width: 7;
+            stroke-linecap: butt;
+            opacity: 0.92;
         }
 
         .arc-temp-cold {
             fill: none;
             stroke: var(--temp-cold);
-            stroke-width: 16;
-            stroke-linecap: round;
+            stroke-width: 7.5;
+            stroke-linecap: butt;
+            opacity: 0.92;
         }
 
         .arc-temp-optimal {
             fill: none;
             stroke: var(--temp-optimal);
-            stroke-width: 16;
+            stroke-width: 7.5;
+            opacity: 0.95;
         }
 
         .arc-temp-hot {
             fill: none;
             stroke: var(--temp-hot);
-            stroke-width: 16;
-            stroke-linecap: round;
+            stroke-width: 7.5;
+            stroke-linecap: butt;
+            opacity: 0.92;
         }
 
         .gauge-tick.minor {
-            stroke: var(--dial-ticks);
+            stroke: rgba(255, 255, 255, 0.32);
+            stroke-width: 1;
+            stroke-linecap: round;
+        }
+
+        .gauge-tick.medium {
+            stroke: rgba(255, 255, 255, 0.62);
             stroke-width: 1.5;
             stroke-linecap: round;
         }
 
         .gauge-tick.major {
-            stroke: var(--dial-ticks-major);
-            stroke-width: 2.5;
+            stroke: rgba(255, 255, 255, 0.95);
+            stroke-width: 2.2;
             stroke-linecap: round;
         }
 
         .gauge-num {
             font-family: 'Outfit', sans-serif;
-            font-size: 13px;
-            font-weight: 600;
+            font-size: 11.5px;
+            font-weight: 700;
             fill: var(--dial-num);
+            letter-spacing: 0.3px;
         }
 
-        /* Needle Design */
+        /* Avionics Needle & Machined Hub */
+        .needle-tail {
+            fill: #2A322E;
+            stroke: rgba(255, 255, 255, 0.25);
+            stroke-width: 0.6;
+        }
+
         .needle-blade {
-            fill: var(--needle-color);
+            fill: #F8FAFC;
         }
 
         .needle-tip {
-            fill: var(--primary);
+            fill: #34D399;
         }
 
         .pivot-ring {
-            fill: var(--surface);
-            stroke: var(--needle-color);
-            stroke-width: 3;
+            fill: #1A201D;
+            stroke: rgba(255, 255, 255, 0.35);
+            stroke-width: 1.5;
+        }
+
+        .pivot-inner {
+            fill: #333D38;
+            stroke: rgba(255, 255, 255, 0.2);
+            stroke-width: 1;
         }
 
         .pivot-core {
-            fill: var(--needle-color);
+            fill: #E2E8F0;
         }
 
         .temp-needle-blade {
-            fill: #E11D48;
+            fill: #FF4D4D;
+        }
+
+        .temp-needle-tip {
+            fill: #FFFBEB;
         }
 
         .temp-needle-tail {
-            fill: var(--needle-color);
+            fill: #2B1F1B;
+            stroke: rgba(255, 255, 255, 0.22);
+            stroke-width: 0.6;
         }
 
         .temp-pivot-base {
-            fill: var(--needle-color);
+            fill: #3A251E;
+            stroke: rgba(255, 255, 255, 0.22);
+            stroke-width: 1;
         }
 
         .temp-pivot-core {
-            fill: #E11D48;
+            fill: #FF6B4A;
         }
 
         /* Legend Strip */
@@ -614,4 +698,259 @@
 
         @keyframes spin {
             to { transform: rotate(360deg); }
+        }
+
+        /* Soil Moisture Card: Frosted Rain Window Background Effect */
+        .moisture-rain-card {
+            position: relative;
+            overflow: hidden;
+            background: #333;
+            --rain-image: url("https://farm8.staticflickr.com/7238/6880444874_a691311ced_k.jpg");
+            --text-heading: rgba(255, 255, 255, 0.95);
+            --text-muted: rgba(255, 255, 255, 0.78);
+            --dial-track: rgba(255, 255, 255, 0.18);
+            --dial-ticks: rgba(255, 255, 255, 0.45);
+            --dial-ticks-major: rgba(255, 255, 255, 0.85);
+            --dial-num: rgba(255, 255, 255, 0.88);
+            --needle-color: #FFFFFF;
+        }
+
+        .moisture-rain-card > .gauge-header,
+        .moisture-rain-card > .dial-stage,
+        .moisture-rain-card > .gauge-legend {
+            position: relative;
+            z-index: 3;
+        }
+
+        .moisture-rain-card .status-pill {
+            background: rgba(255, 255, 255, 0.16);
+            color: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(4px);
+        }
+
+        .moisture-rain-card .status-pill.optimal {
+            background: rgba(64, 145, 108, 0.35);
+            color: #D8F3DC;
+        }
+
+        .moisture-rain-card .status-pill.warn {
+            background: rgba(245, 158, 11, 0.32);
+            color: #FEF3C7;
+        }
+
+        .moisture-rain-card .status-pill.alert {
+            background: rgba(244, 63, 94, 0.35);
+            color: #FFE4E6;
+        }
+
+        .moisture-rain-card .pivot-ring {
+            fill: rgba(30, 35, 32, 0.85);
+        }
+
+        .rain-window-bg {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            border-radius: inherit;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .rain-blurred {
+            position: absolute;
+            inset: -16px;
+            filter: blur(12px);
+        }
+
+        .rain-photo {
+            width: 100%;
+            height: 100%;
+            background-image: var(--rain-image);
+            background-size: cover;
+            background-position: 50%;
+        }
+
+        .rain-layer,
+        .rain-shadows,
+        .rain-drops {
+            position: absolute;
+            inset: 0;
+        }
+
+        .rain-layer {
+            z-index: 1;
+        }
+
+        .rain-frosted {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            background: #333;
+            opacity: 0.3125;
+            border-radius: inherit;
+        }
+
+        .rain-drop {
+            position: absolute;
+            border-radius: 100%;
+            background-image: var(--rain-image);
+            background-position: 50%;
+            opacity: 0.5;
+            filter: blur(0.5px);
+            will-change: transform, opacity;
+        }
+
+        .rain-shadow {
+            position: absolute;
+            z-index: 5;
+            margin-left: 2px;
+            margin-top: 1px;
+            border-radius: 100%;
+            box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+            will-change: transform, opacity;
+        }
+
+        @keyframes streaking {
+            from {
+                opacity: 0;
+                transform: rotateY(180deg);
+            }
+            5% {
+                opacity: 0.5;
+            }
+            50% {
+                transform: translateY(calc(var(--rain-travel, 420px) * 0.25)) rotateY(180deg);
+            }
+            to {
+                transform: translateY(var(--rain-travel, 420px)) rotateY(180deg);
+            }
+        }
+
+        /* Temperature Card: XYZ Glassmorphism over Flame */
+        .temp-glass-card {
+            position: relative;
+            overflow: hidden;
+            --flame-accent: hsl(24, 95%, 55%);
+            --flame-glow: hsl(38, 95%, 72%);
+            --white0: hsla(0, 0%, 100%, 0);
+            --white50: hsla(0, 0%, 100%, 0.05);
+            --white200: hsla(0, 0%, 100%, 0.18);
+            --white: hsl(0, 0%, 100%);
+            --text-heading: rgba(255, 255, 255, 0.96);
+            --text-muted: rgba(255, 236, 214, 0.8);
+            --dial-track: hsla(0, 0%, 100%, 0.14);
+            --dial-ticks: hsla(0, 0%, 100%, 0.42);
+            --dial-ticks-major: hsla(0, 0%, 100%, 0.85);
+            --dial-num: rgba(255, 245, 232, 0.92);
+            --needle-color: #FFFFFF;
+            background: #0B0705;
+            box-shadow: 0 12px 32px -4px rgba(15, 7, 3, 0.45);
+        }
+
+        .temp-glass-card:hover {
+            box-shadow: 0 16px 40px -4px rgba(235, 95, 20, 0.25);
+        }
+
+        .temp-glass-card > .gauge-header,
+        .temp-glass-card > .dial-stage,
+        .temp-glass-card > .gauge-legend {
+            position: relative;
+            z-index: 2;
+        }
+
+        .temp-glass-backdrop {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            border-radius: inherit;
+            overflow: hidden;
+            pointer-events: none;
+            background: #080504;
+        }
+
+        .temp-glass-flame {
+            position: absolute;
+            width: 112%;
+            height: 112%;
+            top: -6%;
+            left: -6%;
+            object-fit: cover;
+            object-position: center 65%;
+            opacity: 0.92;
+            filter: blur(10px);
+            transform-origin: center bottom;
+            animation: flameFlicker 3.2s ease-in-out infinite alternate;
+        }
+
+        @keyframes flameFlicker {
+            0% {
+                transform: scale(1) translateY(0);
+                filter: blur(10px) brightness(0.95) saturate(1.05);
+            }
+            50% {
+                transform: scale(1.03, 1.05) translateY(-2px);
+                filter: blur(10px) brightness(1.08) saturate(1.15);
+            }
+            100% {
+                transform: scale(1.01, 0.99) translateY(1px);
+                filter: blur(10px) brightness(0.98) saturate(1.08);
+            }
+        }
+
+        .temp-glass-surface {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            border-radius: inherit;
+            pointer-events: none;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            background-image: linear-gradient(90deg, var(--white200), var(--white50));
+        }
+
+        .temp-glass-surface::before,
+        .temp-glass-surface::after {
+            content: "";
+            display: block;
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            pointer-events: none;
+        }
+
+        .temp-glass-surface::before {
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            -webkit-mask-image: linear-gradient(135deg, var(--white), var(--white0) 50%);
+            mask-image: linear-gradient(135deg, var(--white), var(--white0) 50%);
+        }
+
+        .temp-glass-surface::after {
+            border: 1px solid rgba(249, 115, 22, 0.45);
+            -webkit-mask-image: linear-gradient(135deg, var(--white0) 50%, var(--white));
+            mask-image: linear-gradient(135deg, var(--white0) 50%, var(--white));
+        }
+
+        .temp-glass-card .gauge-header-title h2 {
+            color: #FFF4E6;
+        }
+
+        .temp-glass-card .status-pill {
+            background: hsla(0, 0%, 100%, 0.14);
+            color: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(4px);
+        }
+
+        .temp-glass-card .status-pill.cold {
+            background: hsla(199, 95%, 60%, 0.28);
+            color: #E0F2FE;
+        }
+
+        .temp-glass-card .status-pill.optimal {
+            background: hsla(152, 70%, 45%, 0.32);
+            color: #D8F3DC;
+        }
+
+        .temp-glass-card .status-pill.alert {
+            background: hsla(350, 89%, 60%, 0.32);
+            color: #FFE4E6;
         }

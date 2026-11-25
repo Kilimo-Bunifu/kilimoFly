@@ -88,9 +88,20 @@
         </section>
 
         <!-- 3. Main Gauges Row -->
-        <section class="gauges-row">
+        <section class="gauges-row" id="gaugesRow">
             <!-- Gauge 1: Soil Moisture (260° Circular Dial from reference) -->
-            <div class="gauge-card" id="moistureCard">
+            <div class="gauge-card moisture-rain-card" id="moistureCard">
+                <div class="rain-window-bg" aria-hidden="true">
+                    <div class="rain-blurred">
+                        <div class="rain-photo"></div>
+                    </div>
+                    <div class="rain-layer">
+                        <div class="rain-shadows" id="moistureRainShadows"></div>
+                        <div class="rain-drops" id="moistureRainDrops"></div>
+                    </div>
+                    <div class="rain-frosted"></div>
+                </div>
+
                 <div class="gauge-header">
                     <div class="gauge-header-title">
                         <h2>Soil Moisture</h2>
@@ -101,6 +112,45 @@
 
                 <div class="dial-stage">
                     <svg class="dial-svg" viewBox="0 0 340 320" aria-label="Soil Moisture Gauge">
+                        <defs>
+                            <radialGradient id="moistureDialGrad" cx="50%" cy="45%" r="55%">
+                                <stop offset="0%" stop-color="rgba(22, 30, 26, 0.72)" />
+                                <stop offset="82%" stop-color="rgba(10, 14, 12, 0.86)" />
+                                <stop offset="100%" stop-color="rgba(5, 8, 7, 0.94)" />
+                            </radialGradient>
+                            <linearGradient id="bezelRingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="rgba(255, 255, 255, 0.28)" />
+                                <stop offset="50%" stop-color="rgba(255, 255, 255, 0.06)" />
+                                <stop offset="100%" stop-color="rgba(255, 255, 255, 0.2)" />
+                            </linearGradient>
+                            <filter id="needleShadow" x="-30%" y="-30%" width="160%" height="160%">
+                                <feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#000000" flood-opacity="0.65" />
+                            </filter>
+                        </defs>
+
+                        <!-- Instrument Housing & Machined Bezel -->
+                        <circle cx="170" cy="170" r="144" class="bezel-outer" stroke="url(#bezelRingGrad)" />
+                        <circle cx="170" cy="170" r="137" fill="url(#moistureDialGrad)" class="dial-face" />
+                        <circle cx="170" cy="170" r="133" class="bezel-inner-hairline" />
+
+                        <!-- Corner Bezel Screws -->
+                        <g class="bezel-screw" transform="translate(36, 36) rotate(35)">
+                            <circle cx="0" cy="0" r="4.5" />
+                            <line x1="-2.8" y1="0" x2="2.8" y2="0" />
+                        </g>
+                        <g class="bezel-screw" transform="translate(304, 36) rotate(-25)">
+                            <circle cx="0" cy="0" r="4.5" />
+                            <line x1="-2.8" y1="0" x2="2.8" y2="0" />
+                        </g>
+                        <g class="bezel-screw" transform="translate(36, 284) rotate(-50)">
+                            <circle cx="0" cy="0" r="4.5" />
+                            <line x1="-2.8" y1="0" x2="2.8" y2="0" />
+                        </g>
+                        <g class="bezel-screw" transform="translate(304, 284) rotate(20)">
+                            <circle cx="0" cy="0" r="4.5" />
+                            <line x1="-2.8" y1="0" x2="2.8" y2="0" />
+                        </g>
+
                         <!-- Track Arc (260° sweep, 140° to 400°, r=115, center 170,170) -->
                         <path d="M 81.90 243.92 A 115 115 0 1 1 258.10 243.92" class="gauge-track-bg" />
 
@@ -109,44 +159,40 @@
                         <path d="M 220.41 66.64 A 115 115 0 0 1 260.62 99.20" class="arc-optimal" />
                         <path d="M 260.62 99.20 A 115 115 0 0 1 258.10 243.92" class="arc-wet" />
 
-                        <!-- Major and minor ticks -->
-                        <line x1="93.4" y1="234.3" x2="84.2" y2="242.0" class="gauge-tick major" />
-                        <line x1="71.0" y1="194.7" x2="65.2" y2="196.1" class="gauge-tick minor" />
-                        <line x1="72.2" y1="149.2" x2="60.5" y2="146.7" class="gauge-tick major" />
-                        <line x1="89.6" y1="107.2" x2="84.9" y2="103.5" class="gauge-tick minor" />
-                        <line x1="126.2" y1="80.1" x2="120.9" y2="69.3" class="gauge-tick major" />
-                        <line x1="170.0" y1="68.0" x2="170.0" y2="62.0" class="gauge-tick minor" />
-                        <line x1="213.8" y1="80.1" x2="219.1" y2="69.3" class="gauge-tick major" />
-                        <line x1="250.4" y1="107.2" x2="255.1" y2="103.5" class="gauge-tick minor" />
-                        <line x1="267.8" y1="149.2" x2="279.6" y2="146.7" class="gauge-tick major" />
-                        <line x1="269.0" y1="194.7" x2="274.8" y2="196.1" class="gauge-tick minor" />
-                        <line x1="246.6" y1="234.3" x2="255.8" y2="242.0" class="gauge-tick major" />
+                        <!-- Precision Graduated Scale (50 intervals = every 2%) -->
+                        <g id="moistureTicks"></g>
 
-                        <!-- Numbers placed radially around the circle -->
-                        <text x="67.4" y="256.1" class="gauge-num" text-anchor="middle" dominant-baseline="central">0</text>
-                        <text x="38.9" y="142.1" class="gauge-num" text-anchor="middle" dominant-baseline="central">20</text>
-                        <text x="111.3" y="49.6" class="gauge-num" text-anchor="middle" dominant-baseline="central">40</text>
-                        <text x="228.7" y="49.6" class="gauge-num" text-anchor="middle" dominant-baseline="central">60</text>
-                        <text x="301.1" y="142.1" class="gauge-num" text-anchor="middle" dominant-baseline="central">80</text>
-                        <text x="272.6" y="256.1" class="gauge-num" text-anchor="middle" dominant-baseline="central">100</text>
+                        <!-- Avionics Dial Micro-Label -->
+                        <text x="170" y="114" class="dial-micro-label" text-anchor="middle">MOISTURE % VWC</text>
+                        <text x="170" y="126" class="dial-micro-sub" text-anchor="middle">CAL 0-100</text>
 
-                        <!-- Needle starts at 0 mark (-130°) -->
-                        <g transform="translate(170, 170)">
+                        <!-- Numbers placed radially around the bezel -->
+                        <text x="74.2" y="250.3" class="gauge-num" text-anchor="middle" dominant-baseline="central">0</text>
+                        <text x="51.2" y="131.4" class="gauge-num" text-anchor="middle" dominant-baseline="central">20</text>
+                        <text x="115.2" y="57.6" class="gauge-num" text-anchor="middle" dominant-baseline="central">40</text>
+                        <text x="224.8" y="57.6" class="gauge-num" text-anchor="middle" dominant-baseline="central">60</text>
+                        <text x="288.8" y="131.4" class="gauge-num" text-anchor="middle" dominant-baseline="central">80</text>
+                        <text x="265.8" y="250.3" class="gauge-num" text-anchor="middle" dominant-baseline="central">100</text>
+
+                        <!-- Precision Avionics Needle (starts at 0 mark = -130°) -->
+                        <g transform="translate(170, 170)" filter="url(#needleShadow)">
                             <g id="moisturePointer" transform="rotate(-130)">
-                                <polygon points="-3,14 3,14 1.5,-106 -1.5,-106" class="needle-blade" />
-                                <polygon points="-1.5,-106 1.5,-106 0,-115" class="needle-tip" />
-                                <circle cx="0" cy="0" r="14" class="pivot-ring" />
-                                <circle cx="0" cy="0" r="6" class="pivot-core" />
+                                <polygon points="-3.2,24 3.2,24 2,0 -2,0" class="needle-tail" />
+                                <polygon points="-2.4,0 2.4,0 0.9,-102 -0.9,-102" class="needle-blade" />
+                                <polygon points="-0.9,-102 0.9,-102 0,-113" class="needle-tip" />
+                                <circle cx="0" cy="0" r="13" class="pivot-ring" />
+                                <circle cx="0" cy="0" r="7.5" class="pivot-inner" />
+                                <circle cx="0" cy="0" r="2.8" class="pivot-core" />
                             </g>
                         </g>
                     </svg>
 
-                    <!-- Digital readout (Placeholder until live data arrives) -->
+                    <!-- Digital readout (Avionics OLED inset) -->
                     <div class="dial-readout moisture-pos">
                         <div class="dial-num">
                             <span id="moistureValue">--</span><span class="unit">%</span>
                         </div>
-                        <div class="dial-sub">Target: 60 - 70%</div>
+                        <div class="dial-sub">TARGET 60 - 70%</div>
                     </div>
                 </div>
 
@@ -167,7 +213,11 @@
             </div>
 
             <!-- Gauge 2: Temperature (180° Semicircle Dome from reference) -->
-            <div class="gauge-card" id="temperatureCard">
+            <div class="gauge-card temp-glass-card" id="temperatureCard">
+                <div class="temp-glass-backdrop" aria-hidden="true">
+                    <img src="assets/flame.png" class="temp-glass-flame" alt="">
+                </div>
+                <div class="temp-glass-surface" aria-hidden="true"></div>
                 <div class="gauge-header">
                     <div class="gauge-header-title">
                         <h2>Ambient Temperature</h2>
@@ -178,6 +228,19 @@
 
                 <div class="dial-stage">
                     <svg class="dial-svg" viewBox="0 0 340 260" aria-label="Temperature Gauge">
+                        <defs>
+                            <radialGradient id="tempDialGrad" cx="50%" cy="65%" r="65%">
+                                <stop offset="0%" stop-color="rgba(26, 18, 14, 0.72)" />
+                                <stop offset="80%" stop-color="rgba(12, 8, 6, 0.86)" />
+                                <stop offset="100%" stop-color="rgba(6, 4, 3, 0.94)" />
+                            </radialGradient>
+                        </defs>
+
+                        <!-- Semicircular Avionics Bezel & Recessed Dial -->
+                        <path d="M 26.0 185.0 A 144 144 0 0 1 314.0 185.0 L 314.0 202.0 Q 314.0 208.0 308.0 208.0 L 32.0 208.0 Q 26.0 208.0 26.0 202.0 Z" class="bezel-outer" stroke="url(#bezelRingGrad)" />
+                        <path d="M 33.0 185.0 A 137 137 0 0 1 307.0 185.0 L 307.0 198.0 Q 307.0 202.0 303.0 202.0 L 37.0 202.0 Q 33.0 202.0 33.0 198.0 Z" fill="url(#tempDialGrad)" class="dial-face" />
+                        <path d="M 37.0 185.0 A 133 133 0 0 1 303.0 185.0" class="bezel-inner-hairline" />
+
                         <!-- Track Arc (180° dome arch from 180° to 360°, r=115, center 170,185) -->
                         <path d="M 55.0 185.0 A 115 115 0 0 1 285.0 185.0" class="gauge-track-bg" />
 
@@ -186,46 +249,39 @@
                         <path d="M 117.79 82.53 A 115 115 0 0 1 222.21 82.53" class="arc-temp-optimal" />
                         <path d="M 222.21 82.53 A 115 115 0 0 1 285.0 185.0" class="arc-temp-hot" />
 
-                        <!-- Ticks -->
-                        <line x1="70.0" y1="185.0" x2="58.0" y2="185.0" class="gauge-tick major" />
-                        <line x1="73.0" y1="153.5" x2="67.3" y2="151.6" class="gauge-tick minor" />
-                        <line x1="87.5" y1="125.0" x2="82.6" y2="121.5" class="gauge-tick minor" />
-                        <line x1="99.3" y1="114.3" x2="90.8" y2="105.8" class="gauge-tick major" />
-                        <line x1="110.0" y1="102.5" x2="106.5" y2="97.6" class="gauge-tick minor" />
-                        <line x1="138.5" y1="88.0" x2="136.6" y2="82.3" class="gauge-tick minor" />
-                        <line x1="170.0" y1="85.0" x2="170.0" y2="73.0" class="gauge-tick major" />
-                        <line x1="201.5" y1="88.0" x2="203.4" y2="82.3" class="gauge-tick minor" />
-                        <line x1="230.0" y1="102.5" x2="233.5" y2="97.6" class="gauge-tick minor" />
-                        <line x1="240.7" y1="114.3" x2="249.2" y2="105.8" class="gauge-tick major" />
-                        <line x1="252.5" y1="125.0" x2="257.4" y2="121.5" class="gauge-tick minor" />
-                        <line x1="267.0" y1="153.5" x2="272.7" y2="151.6" class="gauge-tick minor" />
-                        <line x1="270.0" y1="185.0" x2="282.0" y2="185.0" class="gauge-tick major" />
+                        <!-- Precision Graduated Scale (40 intervals = every 0.5°C) -->
+                        <g id="tempTicks"></g>
+
+                        <!-- Avionics Dial Micro-Label -->
+                        <text x="170" y="132" class="dial-micro-label" text-anchor="middle">AMBIENT TEMP °C</text>
+                        <text x="170" y="144" class="dial-micro-sub" text-anchor="middle">THERMAL PROBE</text>
 
                         <!-- Numbers placed radially around the dome arch -->
-                        <text x="36.0" y="185.0" class="gauge-num" text-anchor="middle" dominant-baseline="central">20°</text>
-                        <text x="75.2" y="90.2" class="gauge-num" text-anchor="middle" dominant-baseline="central">25°</text>
-                        <text x="170.0" y="51.0" class="gauge-num" text-anchor="middle" dominant-baseline="central">30°</text>
-                        <text x="264.8" y="90.2" class="gauge-num" text-anchor="middle" dominant-baseline="central">35°</text>
-                        <text x="304.0" y="185.0" class="gauge-num" text-anchor="middle" dominant-baseline="central">40°</text>
+                        <text x="44.0" y="185.0" class="gauge-num" text-anchor="middle" dominant-baseline="central">20°</text>
+                        <text x="80.9" y="95.9" class="gauge-num" text-anchor="middle" dominant-baseline="central">25°</text>
+                        <text x="170.0" y="59.0" class="gauge-num" text-anchor="middle" dominant-baseline="central">30°</text>
+                        <text x="259.1" y="95.9" class="gauge-num" text-anchor="middle" dominant-baseline="central">35°</text>
+                        <text x="296.0" y="185.0" class="gauge-num" text-anchor="middle" dominant-baseline="central">40°</text>
 
-                        <!-- Needle starts at min mark (-90°) -->
-                        <g transform="translate(170, 185)">
+                        <!-- Precision Avionics Needle (starts at min mark = -90°) -->
+                        <g transform="translate(170, 185)" filter="url(#needleShadow)">
                             <g id="temperaturePointer" transform="rotate(-90)">
-                                <polygon points="-3,20 3,20 1.5,0 -1.5,0" class="temp-needle-tail" />
-                                <polygon points="-3,0 3,0 1.5,-108 -1.5,-108" class="temp-needle-blade" />
-                                <polygon points="-1.5,-108 1.5,-108 0,-115" class="temp-needle-blade" />
-                                <circle cx="0" cy="0" r="14" class="temp-pivot-base" />
-                                <circle cx="0" cy="0" r="6" class="temp-pivot-core" />
+                                <polygon points="-3.2,20 3.2,20 2,0 -2,0" class="temp-needle-tail" />
+                                <polygon points="-2.4,0 2.4,0 0.9,-102 -0.9,-102" class="temp-needle-blade" />
+                                <polygon points="-0.9,-102 0.9,-102 0,-113" class="temp-needle-tip" />
+                                <circle cx="0" cy="0" r="13" class="pivot-ring" />
+                                <circle cx="0" cy="0" r="7.5" class="temp-pivot-base" />
+                                <circle cx="0" cy="0" r="2.8" class="temp-pivot-core" />
                             </g>
                         </g>
                     </svg>
 
-                    <!-- Digital readout (Placeholder until live data arrives) -->
+                    <!-- Digital readout (Avionics OLED inset) -->
                     <div class="dial-readout temp-pos">
                         <div class="dial-num">
                             <span id="temperatureValue">--</span><span class="unit">°C</span>
                         </div>
-                        <div class="dial-sub">Target: 27 - 33°C</div>
+                        <div class="dial-sub">TARGET 27 - 33°C</div>
                     </div>
                 </div>
 
@@ -272,6 +328,61 @@
         // Current needle angles (Moisture starts at -130 deg = 0%, Temp starts at -90 deg = 20°C)
         let currentMoistureAngle = -130;
         let currentTempAngle = -90;
+        let isConnected = false;
+        let hasLiveMoisture = false;
+        let hasLiveTemp = false;
+        let splashDone = false;
+        let diagnosticStarted = false;
+        let moistureAnimId = null;
+        let tempAnimId = null;
+        let diagnosticCancelled = false;
+
+        function easeInOutCubic(t) {
+            return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+        }
+
+        function easeOutCubic(t) {
+            return 1 - Math.pow(1 - t, 3);
+        }
+
+        function animateGauge(type, fromAngle, toAngle, fromVal, toVal, durationMs, easeFn, onStep, onDone) {
+            const cancelExisting = () => {
+                if (type === 'moisture' && moistureAnimId !== null) {
+                    cancelAnimationFrame(moistureAnimId);
+                    moistureAnimId = null;
+                }
+                if (type === 'temperature' && tempAnimId !== null) {
+                    cancelAnimationFrame(tempAnimId);
+                    tempAnimId = null;
+                }
+            };
+            cancelExisting();
+
+            const startTime = performance.now();
+            function frame(now) {
+                const elapsed = now - startTime;
+                const t = Math.min(1, elapsed / durationMs);
+                const eased = easeFn(t);
+                const angle = fromAngle + (toAngle - fromAngle) * eased;
+                const val = fromVal + (toVal - fromVal) * eased;
+
+                onStep(angle, val);
+
+                if (t < 1) {
+                    const id = requestAnimationFrame(frame);
+                    if (type === 'moisture') moistureAnimId = id;
+                    else tempAnimId = id;
+                } else {
+                    if (type === 'moisture') moistureAnimId = null;
+                    else tempAnimId = null;
+                    if (onDone) onDone();
+                }
+            }
+
+            const id = requestAnimationFrame(frame);
+            if (type === 'moisture') moistureAnimId = id;
+            else tempAnimId = id;
+        }
 
         const elements = {
             moistureValue: document.getElementById('moistureValue'),
@@ -298,7 +409,8 @@
             themeIcon: document.getElementById('themeIcon'),
             exportBtn: document.getElementById('exportBtn'),
             loadingOverlay: document.getElementById('loadingOverlay'),
-            dashboard: document.getElementById('dashboard')
+            dashboard: document.getElementById('dashboard'),
+            gaugesRow: document.getElementById('gaugesRow')
         };
 
         // Theme management
@@ -320,15 +432,15 @@
             updateThemeIcon(newTheme);
         });
 
-        // Export Viewport as PNG
+        // Export Gauges Cutout as PNG
         elements.exportBtn.addEventListener('click', async () => {
             const originalHtml = elements.exportBtn.innerHTML;
             elements.exportBtn.innerHTML = '<i class="ph-bold ph-spinner ph-spin"></i><span>Exporting...</span>';
             elements.exportBtn.disabled = true;
 
             try {
-                const canvas = await html2canvas(elements.dashboard, {
-                    backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--bg-page').trim(),
+                const canvas = await html2canvas(elements.gaugesRow, {
+                    backgroundColor: null,
                     scale: 2,
                     useCORS: true,
                     logging: false
@@ -336,7 +448,7 @@
 
                 const link = document.createElement('a');
                 const ts = new Date().toISOString().slice(0, 19).replace(/[:-]/g, '').replace('T', '_');
-                link.download = `KilimoFly-Telemetry-${ts}.png`;
+                link.download = `KilimoFly-Gauges-${ts}.png`;
                 link.href = canvas.toDataURL('image/png');
                 link.click();
             } catch (err) {
@@ -351,23 +463,26 @@
         function updateMoisture(value) {
             const val = parseFloat(value);
             if (isNaN(val)) return;
+            hasLiveMoisture = true;
+            diagnosticCancelled = true;
             const clamped = Math.max(0, Math.min(100, val));
 
             elements.moistureValue.textContent = clamped.toFixed(1);
             const targetAngle = -130 + (clamped / 100) * 260;
 
-            const animObj = { angle: currentMoistureAngle };
-            gsap.to(animObj, {
-                angle: targetAngle,
-                duration: 0.9,
-                ease: 'power2.out',
-                onUpdate: () => {
-                    elements.moisturePointer.setAttribute('transform', `rotate(${animObj.angle})`);
-                },
-                onComplete: () => {
-                    currentMoistureAngle = targetAngle;
+            animateGauge(
+                'moisture',
+                currentMoistureAngle,
+                targetAngle,
+                clamped,
+                clamped,
+                900,
+                easeOutCubic,
+                (angle) => {
+                    currentMoistureAngle = angle;
+                    elements.moisturePointer.setAttribute('transform', `rotate(${angle})`);
                 }
-            });
+            );
 
             if (clamped < 60) {
                 elements.moistureZonePill.className = 'status-pill warn';
@@ -385,23 +500,26 @@
         function updateTemperature(value) {
             const val = parseFloat(value);
             if (isNaN(val)) return;
+            hasLiveTemp = true;
+            diagnosticCancelled = true;
             const clamped = Math.max(20, Math.min(40, val));
 
             elements.temperatureValue.textContent = clamped.toFixed(1);
             const targetAngle = -90 + ((clamped - 20) / 20) * 180;
 
-            const animObj = { angle: currentTempAngle };
-            gsap.to(animObj, {
-                angle: targetAngle,
-                duration: 0.9,
-                ease: 'power2.out',
-                onUpdate: () => {
-                    elements.temperaturePointer.setAttribute('transform', `rotate(${animObj.angle})`);
-                },
-                onComplete: () => {
-                    currentTempAngle = targetAngle;
+            animateGauge(
+                'temperature',
+                currentTempAngle,
+                targetAngle,
+                clamped,
+                clamped,
+                900,
+                easeOutCubic,
+                (angle) => {
+                    currentTempAngle = angle;
+                    elements.temperaturePointer.setAttribute('transform', `rotate(${angle})`);
                 }
-            });
+            );
 
             if (clamped < 27) {
                 elements.tempZonePill.className = 'status-pill cold';
@@ -470,8 +588,155 @@
             elements.alertText.textContent = message;
         }
 
+        function sweepMoistureOnce(onDone) {
+            if (hasLiveMoisture || diagnosticCancelled) {
+                if (onDone) onDone();
+                return;
+            }
+            elements.moistureZonePill.className = 'status-pill';
+            elements.moistureZonePill.textContent = 'Diagnostic Check';
+
+            animateGauge(
+                'moisture',
+                -130,
+                130,
+                0,
+                100,
+                750,
+                easeInOutCubic,
+                (angle, val) => {
+                    if (hasLiveMoisture || diagnosticCancelled) return;
+                    currentMoistureAngle = angle;
+                    elements.moisturePointer.setAttribute('transform', `rotate(${angle})`);
+                    elements.moistureValue.textContent = val.toFixed(1);
+                },
+                () => {
+                    if (hasLiveMoisture || diagnosticCancelled) {
+                        if (onDone) onDone();
+                        return;
+                    }
+                    setTimeout(() => {
+                        if (hasLiveMoisture || diagnosticCancelled) {
+                            if (onDone) onDone();
+                            return;
+                        }
+                        animateGauge(
+                            'moisture',
+                            130,
+                            -130,
+                            100,
+                            0,
+                            650,
+                            easeOutCubic,
+                            (angle, val) => {
+                                if (hasLiveMoisture || diagnosticCancelled) return;
+                                currentMoistureAngle = angle;
+                                elements.moisturePointer.setAttribute('transform', `rotate(${angle})`);
+                                elements.moistureValue.textContent = val.toFixed(1);
+                            },
+                            onDone
+                        );
+                    }, 80);
+                }
+            );
+        }
+
+        function sweepTempOnce(onDone) {
+            if (hasLiveTemp || diagnosticCancelled) {
+                if (onDone) onDone();
+                return;
+            }
+            elements.tempZonePill.className = 'status-pill';
+            elements.tempZonePill.textContent = 'Diagnostic Check';
+
+            animateGauge(
+                'temperature',
+                -90,
+                90,
+                20,
+                40,
+                750,
+                easeInOutCubic,
+                (angle, val) => {
+                    if (hasLiveTemp || diagnosticCancelled) return;
+                    currentTempAngle = angle;
+                    elements.temperaturePointer.setAttribute('transform', `rotate(${angle})`);
+                    elements.temperatureValue.textContent = val.toFixed(1);
+                },
+                () => {
+                    if (hasLiveTemp || diagnosticCancelled) {
+                        if (onDone) onDone();
+                        return;
+                    }
+                    setTimeout(() => {
+                        if (hasLiveTemp || diagnosticCancelled) {
+                            if (onDone) onDone();
+                            return;
+                        }
+                        animateGauge(
+                            'temperature',
+                            90,
+                            -90,
+                            40,
+                            20,
+                            650,
+                            easeOutCubic,
+                            (angle, val) => {
+                                if (hasLiveTemp || diagnosticCancelled) return;
+                                currentTempAngle = angle;
+                                elements.temperaturePointer.setAttribute('transform', `rotate(${angle})`);
+                                elements.temperatureValue.textContent = val.toFixed(1);
+                            },
+                            onDone
+                        );
+                    }, 80);
+                }
+            );
+        }
+
+        // Wake Diagnostic Sweep: Moisture solo -> Temperature solo -> Both together
+        // Runs on refresh after splash screen if no live telemetry has arrived yet
+        function runWakeDiagnostic() {
+            if (!splashDone || diagnosticStarted || diagnosticCancelled) return;
+            if (hasLiveMoisture && hasLiveTemp) return;
+            diagnosticStarted = true;
+
+            // 1. Soil moisture gauge does one full sweep
+            sweepMoistureOnce(() => {
+                if (diagnosticCancelled) return;
+                // 2. Ambient temperature gauge does one full sweep
+                sweepTempOnce(() => {
+                    if (diagnosticCancelled) return;
+                    // 3. Both gauges sweep at the same time
+                    let remaining = 2;
+                    const finishBoth = () => {
+                        remaining--;
+                        if (remaining > 0) return;
+                        if (!hasLiveMoisture) {
+                            currentMoistureAngle = -130;
+                            elements.moisturePointer.setAttribute('transform', 'rotate(-130)');
+                            elements.moistureValue.textContent = '--';
+                            elements.moistureZonePill.className = 'status-pill';
+                            elements.moistureZonePill.textContent = isConnected ? 'Waiting for data' : 'Offline';
+                        }
+                        if (!hasLiveTemp) {
+                            currentTempAngle = -90;
+                            elements.temperaturePointer.setAttribute('transform', 'rotate(-90)');
+                            elements.temperatureValue.textContent = '--';
+                            elements.tempZonePill.className = 'status-pill';
+                            elements.tempZonePill.textContent = isConnected ? 'Waiting for data' : 'Offline';
+                        }
+                    };
+
+                    sweepMoistureOnce(finishBoth);
+                    sweepTempOnce(finishBoth);
+                });
+            });
+        }
+
         // Connection
         function setConnectionStatus(connected) {
+            isConnected = connected;
             if (connected) {
                 elements.connectionDot.classList.add('connected');
                 elements.connectionText.textContent = 'Connected';
@@ -479,6 +744,7 @@
             } else {
                 elements.connectionDot.classList.remove('connected');
                 elements.connectionText.textContent = 'Disconnected';
+                runWakeDiagnostic();
             }
         }
 
@@ -536,12 +802,125 @@
             }
         }
 
+        function initMoistureRain() {
+            const card = document.getElementById('moistureCard');
+            const shadowsContainer = document.getElementById('moistureRainShadows');
+            const dropsContainer = document.getElementById('moistureRainDrops');
+            if (!card || !shadowsContainer || !dropsContainer) return;
+
+            const updateRainTravel = () => {
+                card.style.setProperty('--rain-travel', `${card.clientHeight || 420}px`);
+            };
+            updateRainTravel();
+            if (typeof ResizeObserver !== 'undefined') {
+                new ResizeObserver(updateRainTravel).observe(card);
+            } else {
+                window.addEventListener('resize', updateRainTravel);
+            }
+
+            const dropCount = 100;
+            const shadowFrag = document.createDocumentFragment();
+            const dropFrag = document.createDocumentFragment();
+
+            for (let i = 0; i < dropCount; i++) {
+                const x = Math.random();
+                const y = Math.random();
+                const dropSize = 3 + Math.floor(Math.random() * 12) + 1;
+                const dropTime = 5 + Math.floor(Math.random() * 24) + 1;
+                const dropWidth = dropSize;
+                const dropStretch = (3 * dropSize) / dropTime;
+                const dropDuration = (Math.random() * 50) + 1;
+                const dropDelay = -(Math.random() * dropDuration);
+                const dropHeight = dropWidth + dropStretch;
+
+                const drop = document.createElement('div');
+                drop.className = 'rain-drop';
+                drop.style.left = `${(x * 100).toFixed(2)}%`;
+                drop.style.top = `${(y * 100).toFixed(2)}%`;
+                drop.style.width = `${dropWidth}px`;
+                drop.style.height = `${dropHeight.toFixed(2)}px`;
+                drop.style.backgroundSize = `${dropWidth}px ${dropHeight.toFixed(2)}px`;
+                drop.style.backgroundPosition = `${(x * 100).toFixed(2)}% ${(y * 100).toFixed(2)}%`;
+                drop.style.animation = `${dropDuration.toFixed(2)}s streaking infinite linear`;
+                drop.style.animationDelay = `${dropDelay.toFixed(2)}s`;
+
+                const shadow = document.createElement('div');
+                shadow.className = 'rain-shadow';
+                shadow.style.left = `${(x * 100).toFixed(2)}%`;
+                shadow.style.top = `${(y * 100).toFixed(2)}%`;
+                shadow.style.width = `${Math.max(1, dropWidth - 4)}px`;
+                shadow.style.height = `${Math.max(2, dropHeight - 1).toFixed(2)}px`;
+                shadow.style.animation = `${dropDuration.toFixed(2)}s streaking infinite linear`;
+                shadow.style.animationDelay = `${dropDelay.toFixed(2)}s`;
+
+                shadowFrag.appendChild(shadow);
+                dropFrag.appendChild(drop);
+            }
+
+            shadowsContainer.appendChild(shadowFrag);
+            dropsContainer.appendChild(dropFrag);
+        }
+
+        function initGaugeScales() {
+            const svgNS = 'http://www.w3.org/2000/svg';
+
+            // Moisture: 0-100% over 260° (140° to 400°), 50 intervals = every 2%
+            const moistureTicks = document.getElementById('moistureTicks');
+            if (moistureTicks) {
+                const cx = 170, cy = 170, rOuter = 110;
+                for (let i = 0; i <= 50; i++) {
+                    const deg = 140 + (i / 50) * 260;
+                    const rad = (deg * Math.PI) / 180;
+                    const isMajor = i % 10 === 0;
+                    const isMedium = !isMajor && i % 5 === 0;
+                    const rInner = isMajor ? 94 : (isMedium ? 99 : 104);
+
+                    const line = document.createElementNS(svgNS, 'line');
+                    line.setAttribute('x1', (cx + rInner * Math.cos(rad)).toFixed(2));
+                    line.setAttribute('y1', (cy + rInner * Math.sin(rad)).toFixed(2));
+                    line.setAttribute('x2', (cx + rOuter * Math.cos(rad)).toFixed(2));
+                    line.setAttribute('y2', (cy + rOuter * Math.sin(rad)).toFixed(2));
+                    line.setAttribute('class', isMajor ? 'gauge-tick major' : (isMedium ? 'gauge-tick medium' : 'gauge-tick minor'));
+                    moistureTicks.appendChild(line);
+                }
+            }
+
+            // Temperature: 20-40°C over 180° (180° to 360°), 40 intervals = every 0.5°C
+            const tempTicks = document.getElementById('tempTicks');
+            if (tempTicks) {
+                const cx = 170, cy = 185, rOuter = 110;
+                for (let i = 0; i <= 40; i++) {
+                    const deg = 180 + (i / 40) * 180;
+                    const rad = (deg * Math.PI) / 180;
+                    const isMajor = i % 10 === 0;
+                    const isMedium = !isMajor && i % 2 === 0;
+                    const rInner = isMajor ? 94 : (isMedium ? 100 : 105);
+
+                    const line = document.createElementNS(svgNS, 'line');
+                    line.setAttribute('x1', (cx + rInner * Math.cos(rad)).toFixed(2));
+                    line.setAttribute('y1', (cy + rInner * Math.sin(rad)).toFixed(2));
+                    line.setAttribute('x2', (cx + rOuter * Math.cos(rad)).toFixed(2));
+                    line.setAttribute('y2', (cy + rOuter * Math.sin(rad)).toFixed(2));
+                    line.setAttribute('class', isMajor ? 'gauge-tick major' : (isMedium ? 'gauge-tick medium' : 'gauge-tick minor'));
+                    tempTicks.appendChild(line);
+                }
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             initTheme();
+            initGaugeScales();
+            initMoistureRain();
+            connectWebSocket();
             setTimeout(() => {
                 elements.loadingOverlay.classList.add('hidden');
+                setTimeout(() => {
+                    splashDone = true;
+                    if (!hasLiveMoisture && !hasLiveTemp) {
+                        runWakeDiagnostic();
+                    }
+                }, 350);
             }, 300);
-            connectWebSocket();
         });
     </script>
 </body>
