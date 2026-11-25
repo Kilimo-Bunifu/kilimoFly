@@ -39,11 +39,19 @@
                     <span class="live-dot" id="connectionDot"></span>
                     <span id="connectionText">Connecting</span>
                 </div>
+                <button class="btn-ghost" id="audioToggle" title="Toggle caution chime (muted)">
+                    <i class="ph-bold ph-speaker-slash" id="audioIcon"></i>
+                    <span>Chime</span>
+                </button>
                 <button class="btn-ghost" id="themeToggle" title="Toggle theme">
                     <i class="ph-bold ph-sun" id="themeIcon"></i>
                     <span>Theme</span>
                 </button>
-                <button class="btn-ghost" id="exportBtn" title="Export as PNG">
+                <button class="btn-ghost" id="exportCsvBtn" title="Export session telemetry CSV">
+                    <i class="ph-bold ph-file-csv"></i>
+                    <span>CSV</span>
+                </button>
+                <button class="btn-ghost" id="exportBtn" title="Export gauges as PNG">
                     <i class="ph-bold ph-camera"></i>
                     <span>Export</span>
                 </button>
@@ -174,6 +182,18 @@
                         <text x="288.8" y="131.4" class="gauge-num" text-anchor="middle" dominant-baseline="central">80</text>
                         <text x="265.8" y="250.3" class="gauge-num" text-anchor="middle" dominant-baseline="central">100</text>
 
+                        <!-- Avionics Target Bug Markers (60% and 70%) & Session Peak Tell-Tales -->
+                        <g transform="translate(170, 170)">
+                            <polygon points="-4,-121 4,-121 0,-113" class="target-bug" transform="rotate(26)" />
+                            <polygon points="-4,-121 4,-121 0,-113" class="target-bug" transform="rotate(52)" />
+                            <g id="moistureMinMarker" class="peak-marker peak-min" style="display:none;" transform="rotate(-130)">
+                                <polygon points="-3.5,-112 3.5,-112 0,-104" />
+                            </g>
+                            <g id="moistureMaxMarker" class="peak-marker peak-max" style="display:none;" transform="rotate(-130)">
+                                <polygon points="-3.5,-112 3.5,-112 0,-104" />
+                            </g>
+                        </g>
+
                         <!-- Precision Avionics Needle (starts at 0 mark = -130°) -->
                         <g transform="translate(170, 170)" filter="url(#needleShadow)">
                             <g id="moisturePointer" transform="rotate(-130)">
@@ -209,6 +229,10 @@
                         <span class="dot" style="background: var(--zone-wet);"></span>
                         <span>Wet &gt;70%</span>
                     </div>
+                    <button class="peak-reset-btn" id="resetMoisturePeaks" title="Reset session min/max peaks" style="display:none;">
+                        <i class="ph-bold ph-arrows-counter-clockwise"></i>
+                        <span id="moisturePeakText">Peaks</span>
+                    </button>
                 </div>
             </div>
 
@@ -263,6 +287,18 @@
                         <text x="259.1" y="95.9" class="gauge-num" text-anchor="middle" dominant-baseline="central">35°</text>
                         <text x="296.0" y="185.0" class="gauge-num" text-anchor="middle" dominant-baseline="central">40°</text>
 
+                        <!-- Avionics Target Bug Markers (27°C and 33°C) & Session Peak Tell-Tales -->
+                        <g transform="translate(170, 185)">
+                            <polygon points="-4,-121 4,-121 0,-113" class="target-bug" transform="rotate(-27)" />
+                            <polygon points="-4,-121 4,-121 0,-113" class="target-bug" transform="rotate(27)" />
+                            <g id="tempMinMarker" class="peak-marker peak-min" style="display:none;" transform="rotate(-90)">
+                                <polygon points="-3.5,-112 3.5,-112 0,-104" />
+                            </g>
+                            <g id="tempMaxMarker" class="peak-marker peak-max" style="display:none;" transform="rotate(-90)">
+                                <polygon points="-3.5,-112 3.5,-112 0,-104" />
+                            </g>
+                        </g>
+
                         <!-- Precision Avionics Needle (starts at min mark = -90°) -->
                         <g transform="translate(170, 185)" filter="url(#needleShadow)">
                             <g id="temperaturePointer" transform="rotate(-90)">
@@ -298,6 +334,10 @@
                         <span class="dot" style="background: var(--temp-hot);"></span>
                         <span>Warm &gt;33°</span>
                     </div>
+                    <button class="peak-reset-btn" id="resetTempPeaks" title="Reset session min/max peaks" style="display:none;">
+                        <i class="ph-bold ph-arrows-counter-clockwise"></i>
+                        <span id="tempPeakText">Peaks</span>
+                    </button>
                 </div>
             </div>
         </section>
@@ -307,6 +347,7 @@
             <div class="footer-left">
                 <i class="ph-bold ph-shield-check" id="alertsIcon" style="font-size:16px; color:var(--primary);"></i>
                 <span>System Status</span>
+                <span class="telemetry-timestamp" id="telemetryTimestamp">Last update: --</span>
             </div>
             <div class="system-badge" id="alertBadge">
                 <span id="alertText">All systems normal</span>
@@ -336,6 +377,21 @@
         let moistureAnimId = null;
         let tempAnimId = null;
         let diagnosticCancelled = false;
+
+        // Session telemetry state
+        let moistureMin = null;
+        let moistureMax = null;
+        let tempMin = null;
+        let tempMax = null;
+        let lastMoistureVal = null;
+        let lastTempVal = null;
+        let lastPumpState = 'OFF';
+        let lastHeaterState = 'OFF';
+        let lastAlertState = 'OK';
+        let lastTelemetryAt = null;
+        let audioEnabled = false;
+        let audioCtx = null;
+        const telemetryLog = [];
 
         function easeInOutCubic(t) {
             return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
@@ -385,13 +441,23 @@
         }
 
         const elements = {
+            moistureCard: document.getElementById('moistureCard'),
             moistureValue: document.getElementById('moistureValue'),
             moisturePointer: document.getElementById('moisturePointer'),
             moistureZonePill: document.getElementById('moistureZonePill'),
+            moistureMinMarker: document.getElementById('moistureMinMarker'),
+            moistureMaxMarker: document.getElementById('moistureMaxMarker'),
+            resetMoisturePeaks: document.getElementById('resetMoisturePeaks'),
+            moisturePeakText: document.getElementById('moisturePeakText'),
 
+            temperatureCard: document.getElementById('temperatureCard'),
             temperatureValue: document.getElementById('temperatureValue'),
             temperaturePointer: document.getElementById('temperaturePointer'),
             tempZonePill: document.getElementById('tempZonePill'),
+            tempMinMarker: document.getElementById('tempMinMarker'),
+            tempMaxMarker: document.getElementById('tempMaxMarker'),
+            resetTempPeaks: document.getElementById('resetTempPeaks'),
+            tempPeakText: document.getElementById('tempPeakText'),
 
             pumpCard: document.getElementById('pumpCard'),
             pumpBadge: document.getElementById('pumpBadge'),
@@ -401,12 +467,16 @@
             alertBadge: document.getElementById('alertBadge'),
             alertText: document.getElementById('alertText'),
             alertsIcon: document.getElementById('alertsIcon'),
+            telemetryTimestamp: document.getElementById('telemetryTimestamp'),
 
             connectionDot: document.getElementById('connectionDot'),
             connectionText: document.getElementById('connectionText'),
 
+            audioToggle: document.getElementById('audioToggle'),
+            audioIcon: document.getElementById('audioIcon'),
             themeToggle: document.getElementById('themeToggle'),
             themeIcon: document.getElementById('themeIcon'),
+            exportCsvBtn: document.getElementById('exportCsvBtn'),
             exportBtn: document.getElementById('exportBtn'),
             loadingOverlay: document.getElementById('loadingOverlay'),
             dashboard: document.getElementById('dashboard'),
@@ -430,6 +500,63 @@
             document.documentElement.setAttribute('data-theme', newTheme);
             localStorage.setItem('kilimofly-theme', newTheme);
             updateThemeIcon(newTheme);
+        });
+
+        // Audio Caution Chime (muted by default)
+        function playCautionChime(isUrgent) {
+            if (!audioEnabled) return;
+            try {
+                if (!audioCtx) {
+                    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                    if (!AudioCtx) return;
+                    audioCtx = new AudioCtx();
+                }
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+
+                const now = audioCtx.currentTime;
+                const freqs = isUrgent ? [880, 660, 880] : [660, 520];
+                freqs.forEach((freq, idx) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, now + idx * 0.14);
+                    gain.gain.setValueAtTime(0.001, now + idx * 0.14);
+                    gain.gain.exponentialRampToValueAtTime(0.06, now + idx * 0.14 + 0.02);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.14 + 0.12);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now + idx * 0.14);
+                    osc.stop(now + idx * 0.14 + 0.13);
+                });
+            } catch (e) {
+                console.debug('Audio chime unavailable:', e);
+            }
+        }
+
+        elements.audioToggle.addEventListener('click', () => {
+            audioEnabled = !audioEnabled;
+            elements.audioIcon.className = audioEnabled ? 'ph-bold ph-speaker-high' : 'ph-bold ph-speaker-slash';
+            elements.audioToggle.title = audioEnabled ? 'Caution chime enabled (click to mute)' : 'Toggle caution chime (muted)';
+        });
+
+        // Export Session CSV
+        elements.exportCsvBtn.addEventListener('click', () => {
+            if (!telemetryLog.length) {
+                alert('No live telemetry recorded in this session yet.');
+                return;
+            }
+            const header = 'timestamp,moisture_pct,temperature_c,pump,heater,alerts\n';
+            const rows = telemetryLog.map(r =>
+                `${r.timestamp},${r.moisture ?? ''},${r.temperature ?? ''},${r.pump},${r.heater},"${String(r.alerts).replace(/"/g, '""')}"`
+            ).join('\n');
+            const blob = new Blob([header + rows], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            const ts = new Date().toISOString().slice(0, 19).replace(/[:-]/g, '').replace('T', '_');
+            link.href = url;
+            link.download = `KilimoFly-Session-${ts}.csv`;
+            link.click();
+            URL.revokeObjectURL(url);
         });
 
         // Export Gauges Cutout as PNG
@@ -459,6 +586,105 @@
             }
         });
 
+        function updateMoistureAtmosphere(clamped) {
+            elements.moistureCard.classList.remove('rain-light', 'rain-steady', 'rain-heavy');
+            if (lastPumpState === 'ON' || clamped > 70) {
+                elements.moistureCard.classList.add('rain-heavy');
+            } else if (clamped >= 60) {
+                elements.moistureCard.classList.add('rain-steady');
+            } else {
+                elements.moistureCard.classList.add('rain-light');
+            }
+        }
+
+        function updateTempAtmosphere(clamped) {
+            elements.temperatureCard.classList.remove('flame-cool', 'flame-optimal', 'flame-hot');
+            if (lastHeaterState === 'ON' || clamped > 33) {
+                elements.temperatureCard.classList.add('flame-hot');
+            } else if (clamped >= 27) {
+                elements.temperatureCard.classList.add('flame-optimal');
+            } else {
+                elements.temperatureCard.classList.add('flame-cool');
+            }
+        }
+
+        function updateMoisturePeaks(clamped) {
+            if (moistureMin === null || clamped < moistureMin) moistureMin = clamped;
+            if (moistureMax === null || clamped > moistureMax) moistureMax = clamped;
+            const minAngle = -130 + (moistureMin / 100) * 260;
+            const maxAngle = -130 + (moistureMax / 100) * 260;
+            elements.moistureMinMarker.setAttribute('transform', `rotate(${minAngle})`);
+            elements.moistureMaxMarker.setAttribute('transform', `rotate(${maxAngle})`);
+            elements.moistureMinMarker.style.display = 'block';
+            elements.moistureMaxMarker.style.display = 'block';
+            elements.moisturePeakText.textContent = `${moistureMin.toFixed(0)}–${moistureMax.toFixed(0)}%`;
+            elements.resetMoisturePeaks.style.display = 'inline-flex';
+        }
+
+        function updateTempPeaks(clamped) {
+            if (tempMin === null || clamped < tempMin) tempMin = clamped;
+            if (tempMax === null || clamped > tempMax) tempMax = clamped;
+            const minAngle = -90 + ((tempMin - 20) / 20) * 180;
+            const maxAngle = -90 + ((tempMax - 20) / 20) * 180;
+            elements.tempMinMarker.setAttribute('transform', `rotate(${minAngle})`);
+            elements.tempMaxMarker.setAttribute('transform', `rotate(${maxAngle})`);
+            elements.tempMinMarker.style.display = 'block';
+            elements.tempMaxMarker.style.display = 'block';
+            elements.tempPeakText.textContent = `${tempMin.toFixed(1)}–${tempMax.toFixed(1)}°`;
+            elements.resetTempPeaks.style.display = 'inline-flex';
+        }
+
+        elements.resetMoisturePeaks.addEventListener('click', () => {
+            moistureMin = lastMoistureVal;
+            moistureMax = lastMoistureVal;
+            if (lastMoistureVal !== null) {
+                updateMoisturePeaks(lastMoistureVal);
+            } else {
+                elements.moistureMinMarker.style.display = 'none';
+                elements.moistureMaxMarker.style.display = 'none';
+                elements.resetMoisturePeaks.style.display = 'none';
+            }
+        });
+
+        elements.resetTempPeaks.addEventListener('click', () => {
+            tempMin = lastTempVal;
+            tempMax = lastTempVal;
+            if (lastTempVal !== null) {
+                updateTempPeaks(lastTempVal);
+            } else {
+                elements.tempMinMarker.style.display = 'none';
+                elements.tempMaxMarker.style.display = 'none';
+                elements.resetTempPeaks.style.display = 'none';
+            }
+        });
+
+        function recordTelemetrySample(isoTs) {
+            lastTelemetryAt = isoTs ? new Date(isoTs) : new Date();
+            updateTimestampDisplay();
+            telemetryLog.push({
+                timestamp: lastTelemetryAt.toISOString(),
+                moisture: lastMoistureVal !== null ? lastMoistureVal.toFixed(1) : '',
+                temperature: lastTempVal !== null ? lastTempVal.toFixed(1) : '',
+                pump: lastPumpState,
+                heater: lastHeaterState,
+                alerts: lastAlertState
+            });
+            if (telemetryLog.length > 5000) telemetryLog.shift();
+        }
+
+        function updateTimestampDisplay() {
+            if (!lastTelemetryAt) return;
+            const timeStr = lastTelemetryAt.toLocaleTimeString([], { hour12: false });
+            const ageSec = (Date.now() - lastTelemetryAt.getTime()) / 1000;
+            if (ageSec > 30) {
+                elements.telemetryTimestamp.textContent = `Stale (${timeStr})`;
+                elements.telemetryTimestamp.classList.add('stale');
+            } else {
+                elements.telemetryTimestamp.textContent = `Last update: ${timeStr}`;
+                elements.telemetryTimestamp.classList.remove('stale');
+            }
+        }
+
         // Moisture update
         function updateMoisture(value) {
             const val = parseFloat(value);
@@ -466,6 +692,7 @@
             hasLiveMoisture = true;
             diagnosticCancelled = true;
             const clamped = Math.max(0, Math.min(100, val));
+            lastMoistureVal = clamped;
 
             elements.moistureValue.textContent = clamped.toFixed(1);
             const targetAngle = -130 + (clamped / 100) * 260;
@@ -483,6 +710,9 @@
                     elements.moisturePointer.setAttribute('transform', `rotate(${angle})`);
                 }
             );
+
+            updateMoistureAtmosphere(clamped);
+            updateMoisturePeaks(clamped);
 
             if (clamped < 60) {
                 elements.moistureZonePill.className = 'status-pill warn';
@@ -503,6 +733,7 @@
             hasLiveTemp = true;
             diagnosticCancelled = true;
             const clamped = Math.max(20, Math.min(40, val));
+            lastTempVal = clamped;
 
             elements.temperatureValue.textContent = clamped.toFixed(1);
             const targetAngle = -90 + ((clamped - 20) / 20) * 180;
@@ -521,6 +752,9 @@
                 }
             );
 
+            updateTempAtmosphere(clamped);
+            updateTempPeaks(clamped);
+
             if (clamped < 27) {
                 elements.tempZonePill.className = 'status-pill cold';
                 elements.tempZonePill.textContent = 'Cool';
@@ -536,6 +770,7 @@
         // Pump update
         function updatePumpStatus(status) {
             const isOn = String(status).trim().toUpperCase() === 'ON';
+            lastPumpState = isOn ? 'ON' : 'OFF';
             if (isOn) {
                 elements.pumpCard.classList.add('active');
                 elements.pumpBadge.className = 'switch-pill on';
@@ -545,11 +780,13 @@
                 elements.pumpBadge.className = 'switch-pill';
                 elements.pumpBadge.querySelector('.badge-text').textContent = 'Off';
             }
+            if (lastMoistureVal !== null) updateMoistureAtmosphere(lastMoistureVal);
         }
 
         // Heater update
         function updateHeaterStatus(status) {
             const isOn = String(status).trim().toUpperCase() === 'ON';
+            lastHeaterState = isOn ? 'ON' : 'OFF';
             if (isOn) {
                 elements.heaterCard.classList.add('active');
                 elements.heaterBadge.className = 'switch-pill on';
@@ -559,6 +796,7 @@
                 elements.heaterBadge.className = 'switch-pill';
                 elements.heaterBadge.querySelector('.badge-text').textContent = 'Off';
             }
+            if (lastTempVal !== null) updateTempAtmosphere(lastTempVal);
         }
 
         // Alerts update
@@ -567,22 +805,34 @@
             let pillClass = '';
             let message = 'All systems normal';
 
+            elements.moistureCard.classList.remove('caution-warn', 'caution-alert');
+            elements.temperatureCard.classList.remove('caution-warn', 'caution-alert');
+
             if (s === 'OK' || !s) {
                 pillClass = '';
                 message = 'All systems normal';
             } else if (s.includes('LOW MOISTURE')) {
                 pillClass = 'warn';
                 message = 'Notice: Soil moisture is low';
+                elements.moistureCard.classList.add('caution-warn');
             } else if (s.includes('HIGH MOISTURE')) {
                 pillClass = 'alert';
                 message = 'Alert: Soil moisture is high';
+                elements.moistureCard.classList.add('caution-alert');
             } else if (s.includes('LOW TEMP')) {
                 pillClass = 'warn';
                 message = 'Notice: Temperature is below target';
+                elements.temperatureCard.classList.add('caution-warn');
             } else if (s.includes('HIGH TEMP')) {
                 pillClass = 'alert';
                 message = 'Alert: Temperature is above target';
+                elements.temperatureCard.classList.add('caution-alert');
             }
+
+            if (s && s !== 'OK' && s !== lastAlertState) {
+                playCautionChime(pillClass === 'alert');
+            }
+            lastAlertState = s || 'OK';
 
             elements.alertBadge.className = `system-badge ${pillClass}`.trim();
             elements.alertText.textContent = message;
@@ -783,21 +1033,44 @@
         }
 
         function handleIncomingData(data) {
+            if (data.type === 'init' && data.data) {
+                const d = data.data;
+                let receivedAny = false;
+                if (d.moisture !== undefined && d.moisture !== '--') {
+                    updateMoisture(d.moisture);
+                    receivedAny = true;
+                }
+                if (d.temperature !== undefined && d.temperature !== '--') {
+                    updateTemperature(d.temperature);
+                    receivedAny = true;
+                }
+                if (d.pump !== undefined) updatePumpStatus(d.pump);
+                if (d.heater !== undefined) updateHeaterStatus(d.heater);
+                if (d.alerts !== undefined) updateAlerts(d.alerts);
+                if (receivedAny) recordTelemetrySample();
+                return;
+            }
+
             switch (data.topic) {
                 case 'moisture':
                     updateMoisture(data.value);
+                    recordTelemetrySample(data.timestamp);
                     break;
                 case 'temperature':
                     updateTemperature(data.value);
+                    recordTelemetrySample(data.timestamp);
                     break;
                 case 'pump':
                     updatePumpStatus(data.value);
+                    recordTelemetrySample(data.timestamp);
                     break;
                 case 'heater':
                     updateHeaterStatus(data.value);
+                    recordTelemetrySample(data.timestamp);
                     break;
                 case 'alerts':
                     updateAlerts(data.value);
+                    recordTelemetrySample(data.timestamp);
                     break;
             }
         }
@@ -912,6 +1185,7 @@
             initGaugeScales();
             initMoistureRain();
             connectWebSocket();
+            setInterval(updateTimestampDisplay, 5000);
             setTimeout(() => {
                 elements.loadingOverlay.classList.add('hidden');
                 setTimeout(() => {

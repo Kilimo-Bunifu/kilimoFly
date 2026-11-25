@@ -954,3 +954,135 @@
             background: hsla(350, 89%, 60%, 0.32);
             color: #FFE4E6;
         }
+
+        /* Avionics Target Bugs & Session Peak Tell-Tales */
+        .target-bug {
+            fill: #34D399;
+            stroke: rgba(0, 0, 0, 0.7);
+            stroke-width: 0.7;
+        }
+
+        .peak-marker polygon {
+            stroke: rgba(0, 0, 0, 0.75);
+            stroke-width: 0.6;
+        }
+
+        .peak-min polygon {
+            fill: #38BDF8;
+        }
+
+        .peak-max polygon {
+            fill: #F59E0B;
+        }
+
+        .peak-reset-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(255, 255, 255, 0.12);
+            color: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 999px;
+            padding: 2px 9px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.15s ease;
+        }
+
+        .peak-reset-btn:hover {
+            background: rgba(255, 255, 255, 0.22);
+            transform: translateY(-1px);
+        }
+
+        /* Dynamic Weather & Flame Intensity Modifiers */
+        .moisture-rain-card.rain-light .rain-layer {
+            opacity: 0.45;
+            transition: opacity 0.6s ease;
+        }
+
+        .moisture-rain-card.rain-steady .rain-layer {
+            opacity: 0.85;
+            transition: opacity 0.6s ease;
+        }
+
+        .moisture-rain-card.rain-heavy .rain-layer {
+            opacity: 1;
+            transition: opacity 0.6s ease;
+        }
+
+        .moisture-rain-card.rain-heavy .rain-frosted {
+            opacity: 0.22;
+            transition: opacity 0.6s ease;
+        }
+
+        .temp-glass-card.flame-cool .temp-glass-flame {
+            opacity: 0.52;
+            transition: opacity 0.6s ease;
+        }
+
+        .temp-glass-card.flame-optimal .temp-glass-flame {
+            opacity: 0.85;
+            transition: opacity 0.6s ease;
+        }
+
+        .temp-glass-card.flame-hot .temp-glass-flame {
+            opacity: 1;
+            transition: opacity 0.6s ease;
+        }
+
+        /* Actuator Annunciator Backlighting */
+        #pumpCard.active {
+            box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.45), 0 8px 24px -4px rgba(2, 132, 199, 0.28);
+            animation: pumpPulse 2.4s ease-in-out infinite;
+        }
+
+        #heaterCard.active {
+            box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.5), 0 8px 24px -4px rgba(234, 88, 12, 0.3);
+            animation: heaterPulse 2.2s ease-in-out infinite;
+        }
+
+        @keyframes pumpPulse {
+            0%, 100% { box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.35), 0 8px 22px -4px rgba(2, 132, 199, 0.22); }
+            50% { box-shadow: 0 0 0 1.5px rgba(56, 189, 248, 0.65), 0 10px 28px -4px rgba(2, 132, 199, 0.42); }
+        }
+
+        @keyframes heaterPulse {
+            0%, 100% { box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.38), 0 8px 22px -4px rgba(234, 88, 12, 0.24); }
+            50% { box-shadow: 0 0 0 1.5px rgba(245, 158, 11, 0.72), 0 10px 28px -4px rgba(234, 88, 12, 0.45); }
+        }
+
+        /* Telemetry Timestamp & Staleness Indicator */
+        .telemetry-timestamp {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-left: 10px;
+            padding-left: 10px;
+            border-left: 1px solid var(--surface-subtle);
+        }
+
+        .telemetry-timestamp.stale {
+            color: var(--zone-dry);
+        }
+
+        /* Master Caution Card Pulse */
+        .gauge-card.caution-warn {
+            box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.75), 0 12px 30px -4px rgba(245, 158, 11, 0.35);
+            animation: cautionWarnPulse 1.8s ease-in-out infinite;
+        }
+
+        .gauge-card.caution-alert {
+            box-shadow: 0 0 0 2px rgba(244, 63, 94, 0.85), 0 12px 32px -4px rgba(244, 63, 94, 0.45);
+            animation: cautionAlertPulse 1.2s ease-in-out infinite;
+        }
+
+        @keyframes cautionWarnPulse {
+            0%, 100% { box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.45), 0 12px 28px -4px rgba(245, 158, 11, 0.22); }
+            50% { box-shadow: 0 0 0 2.5px rgba(245, 158, 11, 0.9), 0 12px 34px -4px rgba(245, 158, 11, 0.48); }
+        }
+
+        @keyframes cautionAlertPulse {
+            0%, 100% { box-shadow: 0 0 0 2px rgba(244, 63, 94, 0.5), 0 12px 28px -4px rgba(244, 63, 94, 0.25); }
+            50% { box-shadow: 0 0 0 2.5px rgba(244, 63, 94, 0.95), 0 12px 36px -4px rgba(244, 63, 94, 0.55); }
+        }
